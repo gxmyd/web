@@ -29,6 +29,19 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+		.container1 {
+		    max-width: var(1);
+		    margin: 20px auto;
+		    padding: 20px;
+		    background: #ccc;
+		    border-radius: 8px;
+		    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+		.container1 div{
+			font-size: 20px;
+			text-align: left; /* 新增左对齐属性 */	
+			margin-left: 40px;
+		}
         button {
             padding: 12px 24px;
             font-size: 16px;
@@ -65,6 +78,27 @@
         <button onclick="window.open('http://47.120.50.57:8680/','_blank')">可道云</button>
         <button onclick="window.open('http://47.120.50.57:8888/640e243b','_blank')">宝塔面板</button>  
         <button onclick="window.open('https://word.iciba.com/?action=words&class=135&course=1','_blank')">B级英语学习</button>
-    </div>
+		<button onclick="window.open('https://products.groupdocs.app/zh/conversion/docx-to-html','_blank')">DOCX 转 HTML</button>
+		<button onclick="window.open('https://switch-e6a.pages.dev','_blank')">华为交换机命令</button>
+	
+	</div>
+	
+	<div class="container1">
+		<h1>交换机常用命令</h1>
+
+		<div>
+		  <strong>查看端口状态：</strong>
+		  display interface brief
+		</div>
+		<div>
+		  <strong>删除该端口的vlan：</strong>
+		  [Huawei-G0/0/2] undo port default vlan
+		</div>
+		<div>
+		  <strong>把端口1-5放入VLAN 20 中：</strong>
+		  port e1/0/1 to e1/0/5
+		</div>
+		 
+	</div>
 </body>
 </html>
