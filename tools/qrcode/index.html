@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二维码 - 生成 / 解析</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f4f4f9; color: #333; margin: 0; padding: 0 16px 40px; }
+        .topbar { max-width: 960px; margin: 20px auto 0; padding: 12px 20px; background: #ccc; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: left; }
+        .topbar button { padding: 8px 18px; font-size: 14px; border: none; border-radius: 5px; background: #4a90e2; color: #fff; cursor: pointer; }
+        .topbar button:hover { background: #357ABD; }
+        .container { max-width: 960px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: #4a90e2; margin: 0 0 16px; text-align: center; }
+        .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 2px solid #eee; }
+        .tab { padding: 10px 20px; cursor: pointer; border: none; background: none; font-size: 15px; color: #888; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+        .tab.active { color: #4a90e2; border-bottom-color: #4a90e2; font-weight: bold; }
+        .panel { display: none; }
+        .panel.active { display: block; }
+        .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0; }
+        .controls label { font-size: 14px; color: #555; }
+        .controls input[type=text], .controls textarea, .controls select { padding: 8px 10px; font-size: 14px; }
+        textarea { width: 100%; min-height: 100px; resize: vertical; }
+        .btn { padding: 10px 22px; font-size: 14px; border: none; border-radius: 5px; background: #4a90e2; color: #fff; cursor: pointer; }
+        .btn:hover { background: #357ABD; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .stage { display: flex; justify-content: center; margin-top: 16px; }
+        .stage canvas { background: #fff; border: 1px solid #ddd; }
+        .info { font-size: 13px; color: #888; margin: 6px 0; text-align: center; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 700px) { .row { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="topbar"><button onclick="window.location.href='../index.html'">返回工具页</button></div>
+    <div class="container">
+        <h1>二维码</h1>
+        <div class="tabs">
+            <button class="tab active" data-tab="gen">生成</button>
+            <button class="tab" data-tab="parse">解析</button>
+        </div>
+
+        <div class="panel active" id="panel-gen">
+            <div class="controls">
+                <label>类型：</label>
+                <select id="genType">
+                    <option value="0">数字</option>
+                    <option value="1">字母数字</option>
+                    <option value="2">汉字（实验）</option>
+                    <option value="3" selected>任意文本（推荐）</option>
+                </select>
+                <label>纠错级别：</label>
+                <select id="ecLevel">
+                    <option value="L">L (7%)</option>
+                    <option value="M" selected>M (15%)</option>
+                    <option value="Q">Q (25%)</option>
+                    <option value="H">H (30%)</option>
+                </select>
+                <label>尺寸：</label>
+                <select id="size">
+                    <option value="4">小</option>
+                    <option value="8" selected>中</option>
+                    <option value="12">大</option>
+                </select>
+                <button class="btn" id="btnGen">生成</button>
+                <button class="btn" id="btnDl" disabled>下载</button>
+            </div>
+            <div class="row">
+                <div>
+                    <textarea id="genText" placeholder="输入要生成二维码的文本或链接">https://github.com/gxmyd</textarea>
+                </div>
+                <div class="stage"><canvas id="genCanvas"></canvas></div>
+            </div>
+            <div class="info" id="genInfo">点"生成"开始</div>
+        </div>
+
+        <div class="panel" id="panel-parse">
+            <div class="controls">
+                <input type="file" id="qrFile" accept="image/*">
+                <button class="btn" id="btnParse">解析</button>
+            </div>
+            <div class="row">
+                <div class="stage"><canvas id="parseCanvas"></canvas></div>
+                <div>
+                    <div class="info" id="parseInfo">请上传二维码图片</div>
+                    <textarea id="parseResult" readonly placeholder="解析结果会显示在这里"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="lib/qrcode.min.js"></script>
+    <script src="lib/jsQR.js"></script>
+    <script>
+    document.querySelectorAll('.tab').forEach(t => {
+        t.onclick = () => {
+            document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+            t.classList.add('active');
+            document.getElementById('panel-' + t.dataset.tab).classList.add('active');
+        };
+    });
+
+    // ===== 生成 =====
+    const genCanvas = document.getElementById('genCanvas');
+    const genInfo = document.getElementById('genInfo');
+    const btnGen = document.getElementById('btnGen');
+    const btnDl = document.getElementById('btnDl');
+
+    function generate() {
+        const text = document.getElementById('genText').value.trim();
+        if (!text) { genInfo.textContent = '请输入内容'; return; }
+        const type = +document.getElementById('genType').value;
+        const ec = document.getElementById('ecLevel').value;
+        const cellSize = +document.getElementById('size').value;
+        try {
+            const qr = qrcode(type, ec);
+            qr.addData(text);
+            qr.make();
+            const moduleCount = qr.getModuleCount();
+            const size = moduleCount * cellSize;
+            genCanvas.width = size;
+            genCanvas.height = size;
+            const ctx = genCanvas.getContext('2d');
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, size, size);
+            ctx.fillStyle = '#000';
+            for (let r = 0; r < moduleCount; r++) {
+                for (let c = 0; c < moduleCount; c++) {
+                    if (qr.isDark(r, c)) ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+                }
+            }
+            genInfo.textContent = `生成成功：${moduleCount}×${moduleCount} 模块 · ${size}×${size} px`;
+            btnDl.disabled = false;
+        } catch (e) {
+            genInfo.textContent = '生成失败：' + e.message;
+        }
+    }
+    btnGen.onclick = generate;
+    document.getElementById('genText').oninput = () => { btnDl.disabled = true; genInfo.textContent = '点击"生成"开始'; };
+    generate();
+    btnDl.onclick = () => {
+        genCanvas.toBlob(b => {
+            const u = URL.createObjectURL(b);
+            const a = document.createElement('a'); a.href = u; a.download = `qrcode_${Date.now()}.png`; a.click();
+            setTimeout(() => URL.revokeObjectURL(u), 1000);
+        });
+    };
+
+    // ===== 解析 =====
+    const parseCanvas = document.getElementById('parseCanvas');
+    const parseInfo = document.getElementById('parseInfo');
+    const parseResult = document.getElementById('parseResult');
+    document.getElementById('qrFile').onchange = (e) => {
+        const f = e.target.files[0]; if (!f) return;
+        const img = new Image();
+        img.onload = () => {
+            const max = 600;
+            const scale = Math.min(1, max / Math.max(img.width, img.height));
+            parseCanvas.width = Math.round(img.width * scale);
+            parseCanvas.height = Math.round(img.height * scale);
+            parseCanvas.getContext('2d').drawImage(img, 0, 0, parseCanvas.width, parseCanvas.height);
+            parseInfo.textContent = `图片：${img.width}×${img.height}`;
+            parseResult.value = '';
+        };
+        img.src = URL.createObjectURL(f);
+    };
+    document.getElementById('btnParse').onclick = () => {
+        if (parseCanvas.width === 0) { parseInfo.textContent = '请先上传图片'; return; }
+        const ctx = parseCanvas.getContext('2d');
+        const data = ctx.getImageData(0, 0, parseCanvas.width, parseCanvas.height);
+        const result = jsQR(data.data, data.width, data.height);
+        if (result) {
+            parseResult.value = result.data;
+            parseInfo.textContent = `解析成功：${result.data.length} 字符`;
+        } else {
+            parseInfo.textContent = '未能识别出二维码，请换张图试试';
+            parseResult.value = '';
+        }
+    };
+    </script>
+</body>
+</html>

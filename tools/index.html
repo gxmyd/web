@@ -9,28 +9,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>工具页面</title>
     <style>
+        * { box-sizing: border-box; }
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
             background-color: #f4f4f9;
             color: #333;
             margin: 0;
             padding: 0;
         }
-        h1 {
-            color: #4a90e2;
-        }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
         .topbar {
-            max-width: 800px;
-            margin: 20px auto;
+            max-width: 960px;
+            margin: 20px auto 0;
             padding: 12px 20px;
             background: #ccc;
             border-radius: 8px;
@@ -40,7 +29,6 @@
         .topbar button {
             padding: 8px 18px;
             font-size: 14px;
-            margin: 0;
             border: none;
             border-radius: 5px;
             background-color: #4a90e2;
@@ -48,8 +36,47 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        .topbar button:hover {
-            background-color: #357ABD;
+        .topbar button:hover { background-color: #357ABD; }
+        h1 { color: #4a90e2; text-align: center; margin: 24px 0 8px; }
+        .sub { text-align: center; color: #888; margin-bottom: 24px; }
+        .grid {
+            max-width: 960px;
+            margin: 0 auto 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
+            padding: 0 16px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            padding: 22px 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+        }
+        .icon {
+            font-size: 42px;
+            margin-bottom: 8px;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4a90e2;
+            margin-bottom: 6px;
+        }
+        .card-desc {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -57,9 +84,39 @@
     <div class="topbar">
         <button onclick="window.location.href='../index.html'">返回首页</button>
     </div>
-    <div class="container">
-        <h1>工具页面</h1>
-        <p>这里以后放各种小工具。</p>
+    <h1>工具集合</h1>
+    <p class="sub">纯前端 Canvas 实现，无需后端</p>
+    <div class="grid">
+        <a class="card" href="image-processor/index.html">
+            <div class="icon">🖼️</div>
+            <div class="card-title">图片处理</div>
+            <div class="card-desc">压缩 / 裁剪 / 九宫格切图</div>
+        </a>
+        <a class="card" href="image-converter/index.html">
+            <div class="icon">🔄</div>
+            <div class="card-title">格式转换</div>
+            <div class="card-desc">JPG / PNG / WEBP 互转</div>
+        </a>
+        <a class="card" href="watermark/index.html">
+            <div class="icon">💧</div>
+            <div class="card-title">图片水印</div>
+            <div class="card-desc">加文字/图片水印 / 覆盖式去水印</div>
+        </a>
+        <a class="card" href="qrcode/index.html">
+            <div class="icon">📱</div>
+            <div class="card-title">二维码</div>
+            <div class="card-desc">生成二维码 / 解析二维码</div>
+        </a>
+        <a class="card" href="unit-converter/index.html">
+            <div class="icon">📐</div>
+            <div class="card-title">单位换算</div>
+            <div class="card-desc">长度 / 重量 / 温度 / 进制</div>
+        </a>
+        <a class="card" href="world-clock/index.html">
+            <div class="icon">🌍</div>
+            <div class="card-title">世界时钟</div>
+            <div class="card-desc">多时区实时时钟</div>
+        </a>
     </div>
 </body>
 </html>

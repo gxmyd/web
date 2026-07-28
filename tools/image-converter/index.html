@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>格式转换 - JPG/PNG/WEBP</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f4f4f9; color: #333; margin: 0; padding: 0 16px 40px; }
+        .topbar { max-width: 960px; margin: 20px auto 0; padding: 12px 20px; background: #ccc; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: left; }
+        .topbar button { padding: 8px 18px; font-size: 14px; border: none; border-radius: 5px; background: #4a90e2; color: #fff; cursor: pointer; }
+        .topbar button:hover { background: #357ABD; }
+        .container { max-width: 960px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: #4a90e2; margin: 0 0 16px; text-align: center; }
+        .controls { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin: 16px 0; }
+        .controls label { font-size: 14px; color: #555; }
+        select, input[type=range], input[type=file] { font-size: 14px; padding: 4px 8px; }
+        .btn { padding: 10px 22px; font-size: 14px; border: none; border-radius: 5px; background: #4a90e2; color: #fff; cursor: pointer; }
+        .btn:hover { background: #357ABD; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .preview { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; align-items: flex-start; margin-top: 16px; }
+        .preview-block { text-align: center; }
+        .preview-block h3 { margin: 0 0 6px; font-size: 14px; color: #555; }
+        .preview-block canvas { max-width: 380px; max-height: 380px; border: 1px solid #ddd; background: #fafafa; }
+        .info { font-size: 13px; color: #888; margin: 6px 0; }
+        .formats { display: flex; gap: 6px; }
+        .fmt { padding: 6px 14px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; font-size: 14px; background: #fff; }
+        .fmt.active { border-color: #4a90e2; color: #4a90e2; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="topbar"><button onclick="window.location.href='../index.html'">返回工具页</button></div>
+    <div class="container">
+        <h1>图片格式转换</h1>
+        <div class="controls">
+            <input type="file" id="file" accept="image/*">
+            <label>目标格式：</label>
+            <div class="formats">
+                <div class="fmt active" data-fmt="image/jpeg">JPG</div>
+                <div class="fmt" data-fmt="image/png">PNG</div>
+                <div class="fmt" data-fmt="image/webp">WEBP</div>
+            </div>
+            <label>质量：<input type="range" id="quality" min="0.1" max="1" step="0.05" value="0.92"> <span id="qVal">0.92</span></label>
+            <button class="btn" id="btn" disabled>转换并下载</button>
+        </div>
+        <div class="info" id="info">请选择图片</div>
+        <div class="preview">
+            <div class="preview-block"><h3>原图</h3><canvas id="orig"></canvas></div>
+            <div class="preview-block"><h3>预览（下载文件）</h3><canvas id="out"></canvas><div class="info" id="sizeInfo"></div></div>
+        </div>
+    </div>
+    <script>
+    const origCanvas = document.getElementById('orig');
+    const outCanvas = document.getElementById('out');
+    const fileInput = document.getElementById('file');
+    const quality = document.getElementById('quality');
+    const qVal = document.getElementById('qVal');
+    const btn = document.getElementById('btn');
+    const info = document.getElementById('info');
+    const sizeInfo = document.getElementById('sizeInfo');
+    let curFmt = 'image/jpeg';
+    let curImg = null;
+    let curFileSize = 0;
+
+    document.querySelectorAll('.fmt').forEach(el => {
+        el.onclick = () => {
+            document.querySelectorAll('.fmt').forEach(x => x.classList.remove('active'));
+            el.classList.add('active');
+            curFmt = el.dataset.fmt;
+            quality.disabled = (curFmt === 'image/png');
+            quality.style.opacity = quality.disabled ? 0.4 : 1;
+            previewOut();
+        };
+    });
+    quality.oninput = () => { qVal.textContent = (+quality.value).toFixed(2); previewOut(); };
+
+    fileInput.onchange = (e) => {
+        const f = e.target.files[0];
+        if (!f) return;
+        curFileSize = f.size;
+        const img = new Image();
+        img.onload = () => {
+            curImg = img;
+            const ratio = Math.min(1, 380 / Math.max(img.width, img.height));
+            origCanvas.width = Math.round(img.width * ratio);
+            origCanvas.height = Math.round(img.height * ratio);
+            origCanvas.getContext('2d').drawImage(img, 0, 0, origCanvas.width, origCanvas.height);
+            outCanvas.width = origCanvas.width;
+            outCanvas.height = origCanvas.height;
+            outCanvas.getContext('2d').drawImage(img, 0, 0, outCanvas.width, outCanvas.height);
+            info.textContent = `原图：${img.width}×${img.height} · ${(f.size/1024).toFixed(1)} KB · ${f.type || '未知格式'}`;
+            previewOut();
+            btn.disabled = false;
+        };
+        img.src = URL.createObjectURL(f);
+    };
+
+    function previewOut() {
+        if (!curImg) return;
+        const q = quality.disabled ? undefined : +quality.value;
+        outCanvas.toBlob((blob) => {
+            if (!blob) { sizeInfo.textContent = '当前浏览器不支持此格式'; return; }
+            const url = URL.createObjectURL(blob);
+            const img2 = new Image();
+            img2.onload = () => {
+                outCanvas.getContext('2d').drawImage(img2, 0, 0, outCanvas.width, outCanvas.height);
+                const ratio = curFileSize ? (blob.size / curFileSize * 100).toFixed(0) : 100;
+                sizeInfo.textContent = `转换后：${(blob.size/1024).toFixed(1)} KB（约 ${ratio}% 大小）`;
+                URL.revokeObjectURL(url);
+            };
+            img2.src = url;
+        }, curFmt, q);
+    }
+
+    btn.onclick = () => {
+        if (!curImg) return;
+        const q = quality.disabled ? undefined : +quality.value;
+        outCanvas.toBlob((blob) => {
+            if (!blob) { alert('当前浏览器不支持此格式导出'); return; }
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const ext = curFmt.split('/')[1].replace('jpeg', 'jpg');
+            a.download = `converted_${Date.now()}.${ext}`;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }, curFmt, q);
+    };
+    </script>
+</body>
+</html>

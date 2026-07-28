@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>世界时钟</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f4f4f9; color: #333; margin: 0; padding: 0 16px 40px; }
+        .topbar { max-width: 1100px; margin: 20px auto 0; padding: 12px 20px; background: #ccc; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: left; }
+        .topbar button { padding: 8px 18px; font-size: 14px; border: none; border-radius: 5px; background: #4a90e2; color: #fff; cursor: pointer; }
+        .topbar button:hover { background: #357ABD; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: #4a90e2; margin: 0 0 16px; text-align: center; }
+        .add-bar { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
+        .add-bar select { padding: 8px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 5px; }
+        .btn { padding: 8px 18px; font-size: 14px; border: none; border-radius: 5px; background: #4a90e2; color: #fff; cursor: pointer; }
+        .btn:hover { background: #357ABD; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+        .card { background: linear-gradient(135deg, #4a90e2 0%, #357ABD 100%); color: #fff; padding: 18px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; }
+        .card .city { font-size: 16px; font-weight: bold; }
+        .card .tz { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+        .card .time { font-size: 32px; font-family: 'Courier New', monospace; font-weight: bold; margin: 12px 0 6px; letter-spacing: 1px; }
+        .card .date { font-size: 13px; opacity: 0.9; }
+        .card .offset { font-size: 12px; opacity: 0.85; margin-top: 6px; }
+        .card .rm { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.2); border: none; color: #fff; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 14px; line-height: 1; }
+        .card .rm:hover { background: rgba(255,255,255,0.4); }
+        .info { font-size: 13px; color: #888; text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="topbar"><button onclick="window.location.href='../index.html'">返回工具页</button></div>
+    <div class="container">
+        <h1>世界时钟</h1>
+        <div class="add-bar">
+            <select id="tzSelect"></select>
+            <button class="btn" id="btnAdd">添加时区</button>
+        </div>
+        <div class="grid" id="grid"></div>
+        <div class="info" id="info"></div>
+    </div>
+    <script>
+    const TZ_CITIES = {
+        'Asia/Shanghai': '上海',
+        'Asia/Tokyo': '东京',
+        'Asia/Singapore': '新加坡',
+        'Asia/Dubai': '迪拜',
+        'Asia/Kolkata': '孟买',
+        'Europe/London': '伦敦',
+        'Europe/Paris': '巴黎',
+        'Europe/Berlin': '柏林',
+        'Europe/Moscow': '莫斯科',
+        'America/New_York': '纽约',
+        'America/Chicago': '芝加哥',
+        'America/Los_Angeles': '洛杉矶',
+        'America/Sao_Paulo': '圣保罗',
+        'Australia/Sydney': '悉尼',
+        'Pacific/Auckland': '奥克兰',
+        'UTC': 'UTC',
+    };
+    const DEFAULT_ZONES = ['Asia/Shanghai', 'Europe/London', 'America/New_York', 'America/Los_Angeles'];
+    const STORAGE_KEY = 'worldClockZones';
+    let zones = [];
+
+    const grid = document.getElementById('grid');
+    const tzSelect = document.getElementById('tzSelect');
+    const info = document.getElementById('info');
+
+    function loadZones() {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            zones = saved ? JSON.parse(saved) : [...DEFAULT_ZONES];
+        } catch { zones = [...DEFAULT_ZONES]; }
+    }
+    function saveZones() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(zones));
+    }
+    function fillSelect() {
+        tzSelect.innerHTML = '';
+        Object.keys(TZ_CITIES).forEach(tz => {
+            const opt = document.createElement('option');
+            opt.value = tz; opt.textContent = `${TZ_CITIES[tz]} (${tz})`;
+            tzSelect.appendChild(opt);
+        });
+    }
+    function offsetStr(tz) {
+        const now = new Date();
+        const fmt = new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'shortOffset' });
+        const parts = fmt.formatToParts(now);
+        const off = parts.find(p => p.type === 'timeZoneName');
+        return off ? off.value : '';
+    }
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+    function render() {
+        grid.innerHTML = '';
+        if (zones.length === 0) {
+            info.textContent = '没添加任何时区，从上面选一个吧';
+            return;
+        }
+        info.textContent = '';
+        const now = new Date();
+        zones.forEach(tz => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            const timeFmt = new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+            const dateFmt = new Intl.DateTimeFormat('zh-CN', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' });
+            const t = timeFmt.format(now);
+            const d = dateFmt.format(now);
+            card.innerHTML = `
+                <button class="rm" title="移除">×</button>
+                <div class="city">${TZ_CITIES[tz] || tz}</div>
+                <div class="tz">${tz}</div>
+                <div class="time" data-tz="${tz}">${t}</div>
+                <div class="date" data-tz-d="${tz}">${d}</div>
+                <div class="offset">${offsetStr(tz)}</div>
+            `;
+            card.querySelector('.rm').onclick = () => {
+                zones = zones.filter(z => z !== tz);
+                saveZones();
+                render();
+            };
+            grid.appendChild(card);
+        });
+    }
+    function tick() {
+        const now = new Date();
+        zones.forEach(tz => {
+            const tEl = document.querySelector(`.time[data-tz="${tz}"]`);
+            const dEl = document.querySelector(`.date[data-tz-d="${tz}"]`);
+            if (!tEl) return;
+            const timeFmt = new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+            const dateFmt = new Intl.DateTimeFormat('zh-CN', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' });
+            tEl.textContent = timeFmt.format(now);
+            dEl.textContent = dateFmt.format(now);
+        });
+    }
+
+    document.getElementById('btnAdd').onclick = () => {
+        const tz = tzSelect.value;
+        if (!zones.includes(tz)) {
+            zones.push(tz);
+            saveZones();
+            render();
+        }
+    };
+
+    loadZones();
+    fillSelect();
+    render();
+    setInterval(tick, 1000);
+    </script>
+</body>
+</html>
