@@ -69,10 +69,10 @@
         .theme-toggle {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 6px 14px;
+            border-radius: 24px;
+            padding: 10px 20px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
             color: var(--text);
             transition: transform 0.15s;
         }
@@ -81,21 +81,7 @@
         /* Hero */
         .hero {
             text-align: center;
-            padding: 60px 20px 40px;
-        }
-        .hero h1 {
-            font-size: 42px;
-            margin: 0 0 12px;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--tool-1) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: transparent;
-        }
-        .hero .sub {
-            color: var(--text-soft);
-            font-size: 16px;
-            margin: 0 0 36px;
+            padding: 30px 20px 24px;
         }
         .tool-btn {
             display: inline-block;
@@ -187,9 +173,8 @@
         }
 
         @media (max-width: 600px) {
-            .hero h1 { font-size: 30px; }
             .tool-btn { padding: 14px 32px; font-size: 17px; }
-            .hero { padding: 30px 16px 24px; }
+            .hero { padding: 20px 16px 16px; }
         }
     </style>
 </head>
@@ -200,8 +185,6 @@
     </div>
 
     <div class="hero">
-        <h1>一站直达 · 常用网址</h1>
-        <p class="sub">开发 · AI · 下载 · 工具，一个页面搞定</p>
         <a class="tool-btn" href="tools/index.html">🛠️ 进入工具页面</a>
     </div>
 
