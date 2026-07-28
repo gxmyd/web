@@ -51,14 +51,23 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* 顶部导航 */
-        .nav {
+        /* 顶部行：左 工具按钮(居中) · 右 主题切换 */
+        .top-row {
             max-width: 960px;
             margin: 0 auto;
-            padding: 20px 20px 0;
+            padding: 24px 20px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+        }
+        .top-row .hero-inner {
+            grid-column: 2;
             display: flex;
             justify-content: center;
-            align-items: center;
+        }
+        .top-row .theme-toggle {
+            grid-column: 3;
+            justify-self: end;
         }
         .theme-toggle {
             background: var(--card);
@@ -72,10 +81,9 @@
         }
         .theme-toggle:hover { transform: scale(1.05); }
 
-        /* Hero */
+        /* Hero（保留兼容，单纯用于空时撑高） */
         .hero {
             text-align: center;
-            padding: 30px 20px 24px;
         }
         .tool-btn {
             display: inline-block;
@@ -166,12 +174,11 @@
     </style>
 </head>
 <body>
-    <div class="nav">
+    <div class="top-row">
+        <div class="hero-inner">
+            <a class="tool-btn" href="tools/index.html">🛠️ 进入工具页面</a>
+        </div>
         <button class="theme-toggle" id="themeToggle">🌙 暗色</button>
-    </div>
-
-    <div class="hero">
-        <a class="tool-btn" href="tools/index.html">🛠️ 进入工具页面</a>
     </div>
 
     <div class="section">
