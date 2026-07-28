@@ -55,19 +55,29 @@
         button:hover {
             background-color: #357ABD;
         }
-        hr {
-            border: 0;
-            height: 1px;
-            background: #ddd;
-            margin: 20px auto;
-            width: 80%;
+        .tool-btn {
+            padding: 16px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(255,107,107,0.4);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .tool-btn:hover {
+            background: linear-gradient(135deg, #ff5252 0%, #ff7043 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255,107,107,0.5);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>网站集合</h1>
-        <hr />
         <button onclick="window.open('https://gitee.com/gxmyd','_blank')">Gitee码云</button>
         <button onclick="window.open('https://github.com/gxmyd','_blank')">GitHub代码</button>
         <button onclick="window.open('https://blog.csdn.net/m0_74608954?type=blog','_blank')">CSDN博客</button>
@@ -80,8 +90,8 @@
     </div>
 
     <div class="container1">
-        <div>
-            <button onclick="window.location.href='tools/index.html'">工具页面</button>
+        <div style="text-align:center; margin-left:0;">
+            <button class="tool-btn" onclick="window.location.href='tools/index.html'">🛠️ 工具页面</button>
         </div>
     </div>
 </body>
