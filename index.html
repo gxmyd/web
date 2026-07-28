@@ -1,98 +1,290 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <!-- 不缓存 -->
     <meta http-equiv="pragma" content="no-cache" />
     <meta http-equiv="content-type" content="no-cache, must-revalidate" />
     <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>便携式页面</title>
+    <title>便携式页面 · 网址导航</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%AD%3C/text%3E%3C/svg%3E">
     <style>
+        :root {
+            --bg: #f4f6fb;
+            --bg-grad-1: #e0e7ff;
+            --bg-grad-2: #fce7f3;
+            --text: #1f2937;
+            --text-soft: #6b7280;
+            --card: #ffffff;
+            --border: rgba(0,0,0,0.06);
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+            --shadow-hover: 0 10px 28px rgba(0,0,0,0.12);
+            --accent: #4a90e2;
+            --accent-2: #357ABD;
+            --tool-1: #ff6b6b;
+            --tool-2: #ff8e53;
+        }
+        [data-theme="dark"] {
+            --bg: #0f1115;
+            --bg-grad-1: #1a1d2b;
+            --bg-grad-2: #2a1a2b;
+            --text: #e5e7eb;
+            --text-soft: #9ca3af;
+            --card: #1c1f29;
+            --border: rgba(255,255,255,0.08);
+            --shadow: 0 4px 20px rgba(0,0,0,0.4);
+            --shadow-hover: 0 10px 28px rgba(0,0,0,0.6);
+            --accent: #5ea0f0;
+            --accent-2: #4a8ad6;
+        }
+        * { box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f9;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+            background: var(--bg);
+            background-image: radial-gradient(at 20% 10%, var(--bg-grad-1) 0%, transparent 50%),
+                              radial-gradient(at 80% 80%, var(--bg-grad-2) 0%, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text);
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
         }
-        h1 {
-            color: #4a90e2;
+
+        /* 顶部导航 */
+        .nav {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .container1 {
-            max-width: var(1);
-            margin: 20px auto;
-            padding: 20px;
-            background: #ccc;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .container1 div {
-            font-size: 20px;
-            text-align: left;
-            margin-left: 40px;
-        }
-        button {
-            padding: 12px 24px;
-            font-size: 16px;
-            margin: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4a90e2;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #357ABD;
-        }
-        .tool-btn {
-            padding: 16px 40px;
+        .logo {
             font-size: 20px;
             font-weight: bold;
-            margin: 0;
+            color: var(--text);
+        }
+        .logo span { color: var(--accent); }
+        .theme-toggle {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text);
+            transition: transform 0.15s;
+        }
+        .theme-toggle:hover { transform: scale(1.05); }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+        .hero h1 {
+            font-size: 42px;
+            margin: 0 0 12px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--tool-1) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero .sub {
+            color: var(--text-soft);
+            font-size: 16px;
+            margin: 0 0 36px;
+        }
+        .tool-btn {
+            display: inline-block;
+            padding: 18px 48px;
+            font-size: 20px;
+            font-weight: bold;
             border: none;
-            border-radius: 30px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+            border-radius: 50px;
+            background: linear-gradient(135deg, var(--tool-1) 0%, var(--tool-2) 100%);
             color: #fff;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(255,107,107,0.4);
-            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 8px 24px rgba(255,107,107,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
         }
         .tool-btn:hover {
-            background: linear-gradient(135deg, #ff5252 0%, #ff7043 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(255,107,107,0.5);
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 12px 32px rgba(255,107,107,0.55);
+        }
+
+        /* 区块容器 */
+        .section {
+            max-width: 960px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text);
+            margin: 0 0 16px;
+        }
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            background: linear-gradient(180deg, var(--accent), var(--tool-1));
+            border-radius: 2px;
+        }
+
+        /* 卡片网格 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 14px;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 16px;
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--accent);
+        }
+        .card .icon {
+            font-size: 28px;
+        }
+        .card .name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .card .desc {
+            font-size: 12px;
+            color: var(--text-soft);
+        }
+
+        /* 底部 */
+        .footer {
+            text-align: center;
+            padding: 40px 20px 30px;
+            color: var(--text-soft);
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 30px; }
+            .tool-btn { padding: 14px 32px; font-size: 17px; }
+            .hero { padding: 30px 16px 24px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>网站集合</h1>
-        <button onclick="window.open('https://gitee.com/gxmyd','_blank')">Gitee码云</button>
-        <button onclick="window.open('https://github.com/gxmyd','_blank')">GitHub代码</button>
-        <button onclick="window.open('https://blog.csdn.net/m0_74608954?type=blog','_blank')">CSDN博客</button>
-        <button onclick="window.open('https://www.pcsoft.com.cn/','_blank')">PC下载网</button>
-        <br/>
-        <button onclick="window.open('https://dash.cloudflare.com/','_blank')">域名管理平台</button>
-        <button onclick="window.open('https://platform.xiaomimimo.com/console/api-keys','_blank')">小米mino模型</button>
-        <button onclick="window.open('https://platform.agnes-ai.com/settings/apiKeys','_blank')">Agnes AI平台</button>
-        <button onclick="window.open('https://platform.deepseek.com/usage','_blank')">Deepseek API平台</button>
+    <div class="nav">
+        <div class="logo">🧰 <span>便携</span>导航</div>
+        <button class="theme-toggle" id="themeToggle">🌙 暗色</button>
     </div>
 
-    <div class="container1">
-        <div style="text-align:center; margin-left:0;">
-            <button class="tool-btn" onclick="window.location.href='tools/index.html'">🛠️ 工具页面</button>
+    <div class="hero">
+        <h1>一站直达 · 常用网址</h1>
+        <p class="sub">开发 · AI · 下载 · 工具，一个页面搞定</p>
+        <a class="tool-btn" href="tools/index.html">🛠️ 进入工具页面</a>
+    </div>
+
+    <div class="section">
+        <div class="section-title">开发工具</div>
+        <div class="grid">
+            <a class="card" href="https://gitee.com/gxmyd" target="_blank">
+                <div class="icon">🐙</div>
+                <div class="name">Gitee 码云</div>
+                <div class="desc">国内代码托管</div>
+            </a>
+            <a class="card" href="https://github.com/gxmyd" target="_blank">
+                <div class="icon">🐱</div>
+                <div class="name">GitHub</div>
+                <div class="desc">全球代码托管</div>
+            </a>
+            <a class="card" href="https://blog.csdn.net/m0_74608954?type=blog" target="_blank">
+                <div class="icon">📝</div>
+                <div class="name">CSDN 博客</div>
+                <div class="desc">技术文章</div>
+            </a>
+            <a class="card" href="https://dash.cloudflare.com/" target="_blank">
+                <div class="icon">☁️</div>
+                <div class="name">Cloudflare</div>
+                <div class="desc">域名管理</div>
+            </a>
         </div>
     </div>
+
+    <div class="section">
+        <div class="section-title">AI 平台</div>
+        <div class="grid">
+            <a class="card" href="https://platform.xiaomimimo.com/console/api-keys" target="_blank">
+                <div class="icon">🌾</div>
+                <div class="name">小米 Mimo</div>
+                <div class="desc">API 密钥</div>
+            </a>
+            <a class="card" href="https://platform.agnes-ai.com/settings/apiKeys" target="_blank">
+                <div class="icon">🤖</div>
+                <div class="name">Agnes AI</div>
+                <div class="desc">API 密钥</div>
+            </a>
+            <a class="card" href="https://platform.deepseek.com/usage" target="_blank">
+                <div class="icon">🌊</div>
+                <div class="name">Deepseek</div>
+                <div class="desc">用量 / 充值</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">下载资源</div>
+        <div class="grid">
+            <a class="card" href="https://www.pcsoft.com.cn/" target="_blank">
+                <div class="icon">💾</div>
+                <div class="name">PC 下载网</div>
+                <div class="desc">常用软件下载</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">© 2026 便携导航 · 纯静态页面</div>
+
+    <script>
+    // 暗色模式
+    const toggle = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        toggle.textContent = '☀️ 亮色';
+    }
+    toggle.onclick = () => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+            toggle.textContent = '🌙 暗色';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            toggle.textContent = '☀️ 亮色';
+        }
+    };
+    </script>
 </body>
 </html>
