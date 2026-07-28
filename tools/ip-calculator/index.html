@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP 子网计算器</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif; background: #f4f6fb; color: #1f2937; margin: 0; padding: 0 16px 40px; }
+        .topbar { max-width: 960px; margin: 20px auto 0; padding: 12px 20px; background: #ccc; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .topbar button { padding: 8px 18px; font-size: 14px; border: none; border-radius: 5px; background: #4a90e2; color: #fff; cursor: pointer; }
+        .topbar button:hover { background: #357ABD; }
+        .container { max-width: 960px; margin: 20px auto; padding: 24px; background: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: #4a90e2; margin: 0 0 8px; text-align: center; }
+        .sub { text-align: center; color: #888; font-size: 13px; margin-bottom: 24px; }
+        .input-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .input-row label { font-size: 14px; color: #555; }
+        .input-row input { flex: 1; min-width: 200px; padding: 12px 14px; font-size: 16px; font-family: 'Consolas', 'Monaco', monospace; border: 1px solid #ddd; border-radius: 6px; outline: none; }
+        .input-row input:focus { border-color: #4a90e2; }
+        .btn { padding: 12px 24px; font-size: 14px; border: none; border-radius: 5px; background: #4a90e2; color: #fff; cursor: pointer; }
+        .btn:hover { background: #357ABD; }
+        .presets { margin-bottom: 20px; }
+        .presets span { font-size: 13px; color: #888; margin-right: 8px; }
+        .presets button { padding: 5px 10px; font-size: 12px; border: 1px solid #ddd; background: #fff; color: #4a90e2; border-radius: 4px; cursor: pointer; margin-right: 6px; margin-bottom: 4px; }
+        .presets button:hover { background: #4a90e2; color: #fff; }
+        .results { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+        .item { background: #f8f9fc; border-left: 3px solid #4a90e2; padding: 12px 14px; border-radius: 4px; }
+        .item .lbl { font-size: 12px; color: #888; margin-bottom: 4px; }
+        .item .val { font-family: 'Consolas', 'Monaco', monospace; font-size: 15px; color: #1f2937; word-break: break-all; }
+        .item.highlight { background: #fff3e0; border-left-color: #ff8e53; }
+        .item.highlight .val { color: #d84315; font-weight: bold; }
+        .err { background: #fee; border-left-color: #f44336; color: #c62828; padding: 12px 14px; border-radius: 4px; font-size: 14px; display: none; }
+        .err.show { display: block; }
+        .binary { font-size: 12px; color: #666; margin-top: 4px; font-family: 'Consolas', 'Monaco', monospace; word-break: break-all; }
+        .badge { display: inline-block; padding: 2px 8px; font-size: 11px; border-radius: 10px; margin-left: 6px; }
+        .badge.pub { background: #e3f2fd; color: #1565c0; }
+        .badge.priv { background: #fff3e0; color: #ef6c00; }
+        .badge.special { background: #f3e5f5; color: #6a1b9a; }
+    </style>
+</head>
+<body>
+    <div class="topbar"><button onclick="window.location.href='../index.html'">返回工具页</button></div>
+    <div class="container">
+        <h1>IP 子网计算器</h1>
+        <p class="sub">支持 CIDR（/24）或完整掩码（255.255.255.0）</p>
+        <div class="input-row">
+            <label>IP/掩码：</label>
+            <input id="input" type="text" value="192.168.1.10/24" placeholder="例如：192.168.1.10/24 或 192.168.1.10 255.255.255.0" autocomplete="off">
+            <button class="btn" id="btnCalc">计算</button>
+        </div>
+        <div class="presets">
+            <span>常用：</span>
+            <button data-v="192.168.1.1/24">家用 /24</button>
+            <button data-v="192.168.0.1/16">企业 /16</button>
+            <button data-v="10.0.0.1/8">A 类私有 /8</button>
+            <button data-v="172.16.0.1/12">B 类私有 /12</button>
+            <button data-v="192.168.1.0/30">点对点 /30</button>
+            <button data-v="172.20.0.1/22">子网切分 /22</button>
+        </div>
+        <div id="err" class="err"></div>
+        <div class="results" id="results"></div>
+    </div>
+    <script>
+    function ipToInt(ip) {
+        const parts = ip.split('.');
+        if (parts.length !== 4) throw 'IP 必须是 4 段';
+        let n = 0;
+        for (let i = 0; i < 4; i++) {
+            const p = +parts[i];
+            if (!Number.isInteger(p) || p < 0 || p > 255) throw `第 ${i+1} 段 "${parts[i]}" 不合法（需 0-255）`;
+            n = (n * 256) + p;
+        }
+        return n >>> 0;
+    }
+    function intToIp(n) {
+        return [(n >>> 24) & 0xff, (n >>> 16) & 0xff, (n >>> 8) & 0xff, n & 0xff].join('.');
+    }
+    function intToBinary(n) {
+        return n.toString(2).padStart(32, '0').match(/.{1,8}/g).join('.');
+    }
+    function cidrToMask(cidr) {
+        if (cidr < 0 || cidr > 32) throw 'CIDR 必须在 0-32 之间';
+        return cidr === 0 ? 0 : (0xffffffff << (32 - cidr)) >>> 0;
+    }
+    function maskToCidr(mask) {
+        let n = 0;
+        while (mask) { n += mask & 1; mask >>>= 1; }
+        return n;
+    }
+    function getClass(first) {
+        if (first < 128) return 'A';
+        if (first < 192) return 'B';
+        if (first < 224) return 'C';
+        if (first < 240) return 'D (组播)';
+        return 'E (保留)';
+    }
+    function getType(ipInt) {
+        const first = (ipInt >>> 24) & 0xff;
+        const second = (ipInt >>> 16) & 0xff;
+        if (first === 10) return { tag: 'priv', label: '私有' };
+        if (first === 172 && second >= 16 && second <= 31) return { tag: 'priv', label: '私有' };
+        if (first === 192 && second === 168) return { tag: 'priv', label: '私有' };
+        if (first === 127) return { tag: 'special', label: '回环' };
+        if (first === 169 && second === 254) return { tag: 'special', label: '链路本地' };
+        if (first >= 224) return { tag: 'special', label: '组播/保留' };
+        if (first === 0) return { tag: 'special', label: '本网络' };
+        return { tag: 'pub', label: '公网' };
+    }
+
+    function calc() {
+        const raw = document.getElementById('input').value.trim();
+        const errEl = document.getElementById('err');
+        const res = document.getElementById('results');
+        errEl.classList.remove('show');
+        res.innerHTML = '';
+        try {
+            let ipStr, maskStr;
+            if (raw.includes('/')) {
+                const [ip, m] = raw.split('/').map(s => s.trim());
+                ipStr = ip;
+                maskStr = m;
+            } else if (raw.includes(' ')) {
+                const parts = raw.split(/\s+/);
+                ipStr = parts[0]; maskStr = parts[1];
+            } else {
+                throw '请用 / 或空格分隔 IP 和掩码（例：192.168.1.10/24）';
+            }
+            const ipInt = ipToInt(ipStr);
+            let maskInt, cidr;
+            if (/^\d+$/.test(maskStr)) {
+                cidr = +maskStr;
+                maskInt = cidrToMask(cidr);
+            } else {
+                maskInt = ipToInt(maskStr);
+                cidr = maskToCidr(maskInt);
+                if (cidr < 0 || cidr > 32 || cidrToMask(cidr) !== maskInt) throw '掩码不合法（非连续 1）';
+            }
+            const network = (ipInt & maskInt) >>> 0;
+            const wildcard = (~maskInt) >>> 0;
+            const broadcast = (network | wildcard) >>> 0;
+            const total = Math.pow(2, 32 - cidr);
+            const usable = cidr >= 31 ? (cidr === 32 ? 1 : 2) : total - 2;
+            const firstUsable = cidr >= 31 ? network : (network + 1) >>> 0;
+            const lastUsable = cidr >= 31 ? broadcast : (broadcast - 1) >>> 0;
+            const first = (ipInt >>> 24) & 0xff;
+            const ipType = getType(ipInt);
+
+            const items = [
+                { lbl: 'IP 地址', val: intToIp(ipInt), bin: intToBinary(ipInt) },
+                { lbl: '子网掩码', val: intToIp(maskInt) + ' = /' + cidr, bin: intToBinary(maskInt) },
+                { lbl: 'CIDR 前缀', val: '/' + cidr },
+                { lbl: '通配符掩码', val: intToIp(wildcard), bin: intToBinary(wildcard) },
+                { lbl: '网络地址', val: intToIp(network), bin: intToBinary(network) },
+                { lbl: '广播地址', val: intToIp(broadcast), bin: intToBinary(broadcast) },
+                { lbl: 'IP 总数', val: total.toLocaleString() },
+                { lbl: '可用主机数', val: usable.toLocaleString() + (cidr >= 31 ? '（全可用）' : '') },
+                { lbl: '可用 IP 范围', val: intToIp(firstUsable) + '  ~  ' + intToIp(lastUsable), highlight: true },
+                { lbl: '网络类别', val: getClass(first) + ' 类' },
+                { lbl: 'IP 类型', val: ipType.label, badge: ipType },
+                { lbl: '网络位 / 主机位', val: cidr + ' / ' + (32 - cidr) + ' 位' },
+            ];
+
+            for (const it of items) {
+                const div = document.createElement('div');
+                div.className = 'item' + (it.highlight ? ' highlight' : '');
+                const badge = it.badge ? `<span class="badge ${it.badge.tag}">${it.badge.label}</span>` : '';
+                div.innerHTML = `<div class="lbl">${it.lbl}</div><div class="val">${it.val}${badge}</div>` + (it.bin ? `<div class="binary">${it.bin}</div>` : '');
+                res.appendChild(div);
+            }
+        } catch (e) {
+            errEl.textContent = '❌ ' + e;
+            errEl.classList.add('show');
+        }
+    }
+
+    document.getElementById('btnCalc').onclick = calc;
+    document.getElementById('input').addEventListener('input', calc);
+    document.querySelectorAll('.presets button').forEach(b => {
+        b.onclick = () => { document.getElementById('input').value = b.dataset.v; calc(); };
+    });
+    calc();
+    </script>
+</body>
+</html>
