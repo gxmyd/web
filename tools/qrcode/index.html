@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta http-equiv="pragma" content="no-cache" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%AD%3C/text%3E%3C/svg%3E">
     <title>二维码 - 生成 / 解析</title>
     <style>
         * { box-sizing: border-box; }
@@ -134,7 +135,8 @@
             genInfo.textContent = `生成成功：${moduleCount}×${moduleCount} 模块 · ${size}×${size} px`;
             btnDl.disabled = false;
         } catch (e) {
-            genInfo.textContent = '生成失败：' + e.message;
+            const msg = (e && (e.message || e.toString())) || '未知错误（可能文本过长或版本容量不足）';
+            genInfo.textContent = '生成失败：' + msg;
         }
     }
     btnGen.onclick = generate;
@@ -182,3 +184,4 @@
     </script>
 </body>
 </html>
+
