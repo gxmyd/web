@@ -41,16 +41,25 @@
         #hud {
             position: absolute;
             top: 0; left: 0; right: 0;
-            padding: 12px;
+            padding: 14px;
             pointer-events: none;
             font-size: 13px;
         }
+        .hud-panel {
+            background: rgba(15, 17, 21, 0.55);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            padding: 10px 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
         .bar {
             width: 220px;
-            height: 14px;
-            background: rgba(0,0,0,0.55);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 7px;
+            height: 16px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
             margin-bottom: 6px;
             overflow: hidden;
             position: relative;
@@ -59,15 +68,30 @@
             height: 100%;
             transition: width 0.2s;
         }
-        .bar.hp > div { background: linear-gradient(90deg, #ff5252, #ff8a80); }
-        .bar.hunger > div { background: linear-gradient(90deg, #ff9800, #ffd54f); }
-        .bar-label {
+        .bar.hp > div {
+            background: linear-gradient(90deg, #d32f2f, #ff5252 60%, #ff8a80);
+            box-shadow: 0 0 8px rgba(255, 82, 82, 0.6) inset;
+        }
+        .bar.hunger > div {
+            background: linear-gradient(90deg, #f57c00, #ff9800 60%, #ffd54f);
+            box-shadow: 0 0 8px rgba(255, 152, 0, 0.5) inset;
+        }
+        .bar-text {
             position: absolute;
-            top: 0; left: 6px;
-            line-height: 14px;
+            top: 0; right: 8px;
+            line-height: 16px;
             font-size: 11px;
             color: #fff;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+        }
+        .bar-label {
+            position: absolute;
+            top: 0; left: 8px;
+            line-height: 16px;
+            font-size: 11px;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
         }
         #stats {
             display: flex;
@@ -78,33 +102,61 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
         #stats .chip {
-            background: rgba(0,0,0,0.55);
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 2px 8px;
-            border-radius: 10px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.18);
+            padding: 3px 9px;
+            border-radius: 12px;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
         }
         #clock {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(0,0,0,0.55);
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 4px 10px;
+            top: 14px;
+            right: 14px;
+            background: rgba(15, 17, 21, 0.55);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.18);
+            padding: 8px 14px;
             border-radius: 10px;
-            font-size: 12px;
+            font-size: 14px;
             color: #fff;
+            font-weight: 600;
             text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+        #minimap {
+            position: absolute;
+            top: 14px;
+            right: 130px;
+            width: 100px;
+            height: 100px;
+            background: rgba(15, 17, 21, 0.55);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 8px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            overflow: hidden;
+        }
+        #minimapCanvas {
+            display: block;
+            width: 100px;
+            height: 100px;
         }
         #hint {
             position: absolute;
-            bottom: 8px;
-            left: 12px;
-            right: 12px;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
             text-align: center;
             font-size: 11px;
-            color: rgba(255,255,255,0.65);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            color: rgba(255,255,255,0.7);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
             pointer-events: none;
+            background: rgba(15, 17, 21, 0.4);
+            padding: 4px 12px;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
         }
         #inv {
             position: absolute;
@@ -171,16 +223,19 @@
     <div id="game-container">
         <canvas id="canvas" width="800" height="600"></canvas>
         <div id="hud">
-            <div class="bar hp"><div id="hpBar" style="width:100%"></div><span class="bar-label">HP</span></div>
-            <div class="bar hunger"><div id="hungerBar" style="width:100%"></div><span class="bar-label">🍖 饥饿</span></div>
-            <div id="stats">
-                <span class="chip" id="woodChip">🪵 0</span>
-                <span class="chip" id="stoneChip">🪨 0</span>
-                <span class="chip" id="meatChip">🍖 0</span>
-                <span class="chip" id="flowerChip">🌸 0</span>
+            <div class="hud-panel" style="display:inline-block;">
+                <div class="bar hp"><div id="hpBar" style="width:100%"></div><span class="bar-label">❤ HP</span><span class="bar-text" id="hpText">100/100</span></div>
+                <div class="bar hunger"><div id="hungerBar" style="width:100%"></div><span class="bar-label">🍖 饥饿</span><span class="bar-text" id="hungerText">100/100</span></div>
+                <div id="stats">
+                    <span class="chip" id="woodChip">🪵 0</span>
+                    <span class="chip" id="stoneChip">🪨 0</span>
+                    <span class="chip" id="meatChip">🍖 0</span>
+                    <span class="chip" id="flowerChip">🌸 0</span>
+                </div>
             </div>
         </div>
-        <div id="clock">☀ 06:00</div>
+        <div id="minimap"><canvas id="minimapCanvas" width="100" height="100"></canvas></div>
+        <div id="clock">⛅ 06:00</div>
         <div id="hint">WASD 移动 · 鼠标点击攻击 · J 砍树 · K 挖石 · E 吃肉 · I 背包 · R 重生</div>
         <div id="inv" class="hidden">
             <h3>背包</h3>
@@ -220,6 +275,9 @@
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
+    const miniCanvas = document.getElementById('minimapCanvas');
+    const miniCtx = miniCanvas.getContext('2d');
+    miniCtx.imageSmoothingEnabled = false;
 
     // ====== 世界 ======
     const world = {
@@ -351,6 +409,72 @@
         };
     }
 
+    // ====== 粒子 / 飘字 ======
+    const particles = [];
+    const floatTexts = [];
+    function spawnParticle(x, y, vx, vy, color, life, size) {
+        particles.push({ x, y, vx, vy, color, life, lifeMax: life, size: size || 2 });
+    }
+    function spawnWoodParticles(x, y) {
+        for (let i = 0; i < 10; i++) {
+            const ang = rand(-Math.PI, 0);
+            const sp = rand(60, 140);
+            const c = ['#6b4423', '#5a3818', '#8b5a2b', '#3a2a1a'][randInt(0, 3)];
+            spawnParticle(x + rand(-6, 6), y + rand(-4, 4), Math.cos(ang) * sp, Math.sin(ang) * sp - 40, c, rand(0.5, 1.0), randInt(2, 4));
+        }
+    }
+    function spawnStoneParticles(x, y) {
+        for (let i = 0; i < 8; i++) {
+            const ang = rand(-Math.PI, 0);
+            const sp = rand(50, 120);
+            const c = ['#6b6b7a', '#9a9aaa', '#4a4a5a', '#bdbdbd'][randInt(0, 3)];
+            spawnParticle(x + rand(-6, 6), y + rand(-4, 4), Math.cos(ang) * sp, Math.sin(ang) * sp - 30, c, rand(0.4, 0.8), randInt(2, 3));
+        }
+    }
+    function spawnHitParticles(x, y) {
+        for (let i = 0; i < 7; i++) {
+            const ang = rand(0, Math.PI * 2);
+            const sp = rand(70, 150);
+            const c = ['#ff5252', '#ffeb3b', '#fff', '#ff9800'][randInt(0, 3)];
+            spawnParticle(x + rand(-3, 3), y + rand(-3, 3), Math.cos(ang) * sp, Math.sin(ang) * sp, c, rand(0.2, 0.5), 2);
+        }
+    }
+    function spawnBloodParticles(x, y) {
+        for (let i = 0; i < 6; i++) {
+            const ang = rand(0, Math.PI * 2);
+            const sp = rand(30, 80);
+            spawnParticle(x + rand(-2, 2), y + rand(-2, 2), Math.cos(ang) * sp, Math.sin(ang) * sp, '#d32f2f', rand(0.3, 0.6), 2);
+        }
+    }
+    function spawnLeavesParticles(x, y) {
+        for (let i = 0; i < 6; i++) {
+            const ang = rand(-Math.PI, 0);
+            const sp = rand(40, 90);
+            const c = ['#2d6e1f', '#4a8c3f', '#1f4a14', '#3d7a2f'][randInt(0, 3)];
+            spawnParticle(x + rand(-8, 8), y + rand(-8, 0), Math.cos(ang) * sp, Math.sin(ang) * sp - 20, c, rand(0.6, 1.2), 3);
+        }
+    }
+    function spawnFloatText(x, y, text, color) {
+        floatTexts.push({ x, y, text, color: color || '#ffd54f', life: 1.4, lifeMax: 1.4 });
+    }
+    function updateParticles(dt) {
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.vy += 280 * dt;
+            p.vx *= 0.98;
+            p.life -= dt;
+            if (p.life <= 0) particles.splice(i, 1);
+        }
+        for (let i = floatTexts.length - 1; i >= 0; i--) {
+            const f = floatTexts[i];
+            f.y -= 32 * dt;
+            f.life -= dt;
+            if (f.life <= 0) floatTexts.splice(i, 1);
+        }
+    }
+
     // ====== 输入 ======
     const keys = {};
     const mouse = { x: 0, y: 0, worldX: 0, worldY: 0, down: false };
@@ -432,11 +556,16 @@
             if (best) {
                 best.hp -= 25;
                 best.hitFlash = 0.15;
-                if (best.hp <= 0 && best.type === 'deer') {
-                    player.inventory.meat += 1 + randInt(0, 1);
+                spawnHitParticles(best.x, best.y);
+                if (best.hp <= 0) {
+                    if (best.type === 'deer') {
+                        const got = 1 + randInt(0, 1);
+                        player.inventory.meat += got;
+                        spawnFloatText(best.x, best.y, `+${got}🍖`, '#ff8a80');
+                    } else if (best.type === 'wolf') {
+                        spawnFloatText(best.x, best.y, `击杀!`, '#ff5252');
+                    }
                 }
-            } else {
-                // 砍最近的树/石（按 J/K 单独使用）
             }
         }
 
@@ -447,7 +576,14 @@
                 player.attackCd = 0.35;
                 player.attackAnim = 0.2;
                 const got = world.damage(target.tx, target.ty, 15);
-                if (got === T_TREE) player.inventory.wood += 1 + randInt(0, 2);
+                const tcx = target.tx * TILE + TILE / 2;
+                const tcy = target.ty * TILE + TILE / 2;
+                spawnWoodParticles(tcx, tcy);
+                if (got === T_TREE) {
+                    const amt = 1 + randInt(0, 2);
+                    player.inventory.wood += amt;
+                    spawnFloatText(tcx, tcy, `+${amt}🪵`, '#ffd54f');
+                }
             }
             keys['j'] = false;
         }
@@ -457,7 +593,14 @@
                 player.attackCd = 0.4;
                 player.attackAnim = 0.2;
                 const got = world.damage(target.tx, target.ty, 12);
-                if (got === T_STONE) player.inventory.stone += 1 + randInt(0, 1);
+                const tcx = target.tx * TILE + TILE / 2;
+                const tcy = target.ty * TILE + TILE / 2;
+                spawnStoneParticles(tcx, tcy);
+                if (got === T_STONE) {
+                    const amt = 1 + randInt(0, 1);
+                    player.inventory.stone += amt;
+                    spawnFloatText(tcx, tcy, `+${amt}🪨`, '#bdbdbd');
+                }
             }
             keys['k'] = false;
         }
@@ -471,6 +614,7 @@
         if (keys['e'] && player.inventory.meat > 0 && player.hunger < 100) {
             player.inventory.meat -= 1;
             player.hunger = Math.min(100, player.hunger + 30);
+            spawnFloatText(player.x, player.y - 16, '+30🍖', '#ff8a80');
             keys['e'] = false;
         }
         if (player.hp <= 0) {
@@ -576,6 +720,8 @@
             if (isWolf && d < e.size + player.size + 2 && e.attackCd <= 0) {
                 player.hp = Math.max(0, player.hp - 8);
                 player.hitFlash = 0.2;
+                spawnBloodParticles(player.x, player.y);
+                spawnFloatText(player.x, player.y - 16, '-8', '#ff5252');
                 e.attackCd = 1.0;
                 if (player.hp <= 0) {
                     player.alive = false;
@@ -597,7 +743,7 @@
 
     // ====== 渲染 ======
     function render() {
-        // 昼夜亮度 0.35 ~ 1.0
+        // 昼夜亮度 0.4 ~ 1.0
         const tod = world.timeOfDay;
         // 0=夜, 0.25=晨, 0.5=午, 0.75=暮
         const dayPhase = Math.sin(tod * Math.PI * 2 - Math.PI / 2) * 0.5 + 0.5; // 0~1
@@ -606,8 +752,124 @@
         const r = Math.round(0x4a * light);
         const g = Math.round(0x8c * light);
         const b = Math.round(0x3f * light);
+
+        // ====== 天空渐变（屏幕固定，不跟摄像机）======
+        const SKY_H = 110;
+        const sky = ctx.createLinearGradient(0, 0, 0, SKY_H);
+        // 午夜: 深紫→黑; 晨: 粉→蓝; 午: 天蓝→浅; 暮: 橙红→紫
+        // 简化为 4 关键点插值
+        // 0.0 night: #0a0a2a -> #1a1a3a
+        // 0.25 dawn: #ff9a8b -> #4a5fa5
+        // 0.5 noon: #87ceeb -> #b0e0e6
+        // 0.75 dusk: #ff7e5f -> #6b4a8a
+        function lerp(a, b, t) { return a + (b - a) * t; }
+        function hex(r, g, b) { return `rgb(${r|0},${g|0},${b|0})`; }
+        function skyColors(t) {
+            // t in [0,1]: 0=夜, 0.25=晨, 0.5=午, 0.75=暮
+            const segs = [
+                [[10,10,42], [26,26,58]],      // 夜
+                [[255,154,139], [74,95,165]],  // 晨
+                [[135,206,235], [176,224,230]], // 午
+                [[255,126,95], [107,74,138]]   // 暮
+            ];
+            // 找 t 在哪个段
+            const x = t * 4;
+            const i = Math.floor(x) % 4;
+            const f = x - Math.floor(x);
+            const next = (i + 1) % 4;
+            return [
+                lerp(segs[i][0][0], segs[next][0][0], f),
+                lerp(segs[i][0][1], segs[next][0][1], f),
+                lerp(segs[i][0][2], segs[next][0][2], f),
+                lerp(segs[i][1][0], segs[next][1][0], f),
+                lerp(segs[i][1][1], segs[next][1][1], f),
+                lerp(segs[i][1][2], segs[next][1][2], f)
+            ];
+        }
+        const [tr, tg, tb, br, bg, bb] = skyColors(tod);
+        sky.addColorStop(0, hex(tr, tg, tb));
+        sky.addColorStop(1, hex(br, bg, bb));
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, SCREEN_W, SKY_H);
+
+        // 太阳/月亮
+        const sunAng = tod * Math.PI * 2 - Math.PI / 2; // -90° = 0
+        const sunX = SCREEN_W * 0.5 + Math.cos(sunAng) * 320;
+        const sunY = 60 + Math.sin(sunAng) * 40;
+        if (dayPhase > 0.3) {
+            // 太阳
+            const sg = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, 30);
+            sg.addColorStop(0, 'rgba(255, 240, 180, 1)');
+            sg.addColorStop(0.4, 'rgba(255, 200, 120, 0.6)');
+            sg.addColorStop(1, 'rgba(255, 180, 100, 0)');
+            ctx.fillStyle = sg;
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#fff8d0';
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, 12, 0, Math.PI * 2);
+            ctx.fill();
+        } else {
+            // 月亮
+            const mg = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, 24);
+            mg.addColorStop(0, 'rgba(220, 230, 255, 1)');
+            mg.addColorStop(0.5, 'rgba(180, 200, 255, 0.5)');
+            mg.addColorStop(1, 'rgba(150, 180, 255, 0)');
+            ctx.fillStyle = mg;
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, 24, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#e8eeff';
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, 9, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // 远山（视差 0.2，跟摄像机但慢）
+        const mtnOffset = cam.x * 0.2;
+        const mtnY = SKY_H - 20;
+        ctx.fillStyle = `rgba(60, 70, 100, ${0.6 + dayPhase * 0.2})`;
+        for (let i = -1; i < 7; i++) {
+            const peakX = i * 180 - (mtnOffset % 180);
+            const peakH = 30 + (i * 37) % 25;
+            ctx.beginPath();
+            ctx.moveTo(peakX - 90, SKY_H);
+            ctx.lineTo(peakX, SKY_H - peakH);
+            ctx.lineTo(peakX + 90, SKY_H);
+            ctx.closePath();
+            ctx.fill();
+        }
+        // 第二层更远的山（视差 0.1）
+        ctx.fillStyle = `rgba(100, 110, 140, ${0.4 + dayPhase * 0.15})`;
+        for (let i = -1; i < 9; i++) {
+            const peakX = i * 120 - (cam.x * 0.1 % 120);
+            const peakH = 18 + (i * 41) % 15;
+            ctx.beginPath();
+            ctx.moveTo(peakX - 60, SKY_H);
+            ctx.lineTo(peakX, SKY_H - peakH);
+            ctx.lineTo(peakX + 60, SKY_H);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // 云（飘动）
+        const cloudOffset = (Date.now() / 60) % (SCREEN_W + 200);
+        for (let i = 0; i < 4; i++) {
+            const cx = ((i * 250 - cloudOffset + cam.x * 0.15) % (SCREEN_W + 200) + SCREEN_W + 200) % (SCREEN_W + 200) - 100;
+            const cy = 20 + i * 12;
+            ctx.fillStyle = `rgba(255, 255, 255, ${0.5 * Math.min(1, dayPhase + 0.2)})`;
+            // 云由 3-4 个圆组成
+            for (let k = 0; k < 4; k++) {
+                ctx.beginPath();
+                ctx.arc(cx + k * 14, cy + (k % 2) * 3, 8 + (k % 3) * 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // ====== 草地底（覆盖天空下方）======
         ctx.fillStyle = `rgb(${r},${g},${b})`;
-        ctx.fillRect(0, 0, SCREEN_W, SCREEN_H);
+        ctx.fillRect(0, SKY_H, SCREEN_W, SCREEN_H - SKY_H);
 
         // 视口范围
         const x0 = Math.max(0, Math.floor(cam.x / TILE));
@@ -620,22 +882,50 @@
                 const t = world.tiles[y][x];
                 const sx = Math.round(x * TILE - cam.x);
                 const sy = Math.round(y * TILE - cam.y);
+                // 跳过被天空覆盖的瓦片（但 y0 是世界坐标，sy < SKY_H 的部分被天空盖）
+                if (sy < SKY_H && sy + TILE > SKY_H) {
+                    // 部分被天空覆盖：只画被覆盖以下部分
+                    ctx.fillStyle = `rgb(${r},${g},${b})`;
+                    ctx.fillRect(sx, SKY_H, TILE, sy + TILE - SKY_H);
+                } else if (sy + TILE <= SKY_H) {
+                    continue; // 完全在天空下
+                } else {
+                    ctx.fillStyle = `rgb(${r},${g},${b})`;
+                    ctx.fillRect(sx, sy, TILE, TILE);
+                }
                 if (t === T_GRASS) {
                     // 草随机色斑
                     if ((x * 31 + y * 17) % 5 === 0) {
                         ctx.fillStyle = `rgb(${Math.round(0x5f*light)},${Math.round(0xa5*light)},${Math.round(0x4a*light)})`;
                         ctx.fillRect(sx + 4, sy + 4, 2, 2);
                     }
+                    // 偶尔小花簇
+                    if ((x * 53 + y * 89) % 23 === 0) {
+                        ctx.fillStyle = '#ffd54f';
+                        ctx.fillRect(sx + 8, sy + 8, 2, 2);
+                        ctx.fillRect(sx + 20, sy + 18, 2, 2);
+                    }
                 } else if (t === T_FLOWER) {
                     ctx.fillStyle = '#4a8c3f';
                     ctx.fillRect(sx, sy, TILE, TILE);
-                    // 随机色花
-                    const colors = ['#ff6b6b', '#ffd54f', '#e1bee7', '#fff'];
-                    ctx.fillStyle = colors[(x * 7 + y * 13) % 4];
-                    ctx.fillRect(sx + 13, sy + 13, 6, 6);
+                    const colors = ['#ff6b6b', '#ffd54f', '#e1bee7', '#fff', '#ff8a80'];
+                    const fc = colors[(x * 7 + y * 13) % 5];
+                    ctx.fillStyle = fc;
+                    ctx.beginPath();
+                    ctx.arc(sx + 16, sy + 16, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#fff8d0';
+                    ctx.fillRect(sx + 15, sy + 15, 2, 2);
+                    // 茎
+                    ctx.fillStyle = '#2d5e1f';
+                    ctx.fillRect(sx + 15, sy + 22, 2, 6);
                 } else if (t === T_BUSH) {
                     ctx.fillStyle = '#4a8c3f';
                     ctx.fillRect(sx, sy, TILE, TILE);
+                    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+                    ctx.beginPath();
+                    ctx.ellipse(sx + 16, sy + 28, 12, 3, 0, 0, Math.PI * 2);
+                    ctx.fill();
                     ctx.fillStyle = '#3a7c2f';
                     ctx.beginPath();
                     ctx.arc(sx + 16, sy + 18, 11, 0, Math.PI * 2);
@@ -644,32 +934,40 @@
                     ctx.beginPath();
                     ctx.arc(sx + 13, sy + 14, 6, 0, Math.PI * 2);
                     ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(sx + 20, sy + 15, 5, 0, Math.PI * 2);
+                    ctx.fill();
                 } else if (t === T_WATER) {
-                    const wobble = Math.sin((Date.now() / 600) + x + y) * 0.2 + 0.8;
-                    ctx.fillStyle = `rgb(${Math.round(0x3a*light)},${Math.round(0x6f*light*wobble)},${Math.round(0xa0*light)})`;
+                    const wobble = Math.sin((Date.now() / 600) + x + y) * 0.3 + 0.7;
+                    const wr = Math.round(0x3a * light);
+                    const wg = Math.round(0x6f * light * wobble);
+                    const wb = Math.round(0xa0 * light);
+                    ctx.fillStyle = `rgb(${wr},${wg},${wb})`;
                     ctx.fillRect(sx, sy, TILE, TILE);
-                    ctx.fillStyle = `rgba(255,255,255,${0.3 * light})`;
-                    ctx.fillRect(sx + 4 + (Math.sin(x + Date.now()/500) * 3 | 0), sy + 8, 8, 2);
+                    // 多层波纹
+                    ctx.fillStyle = `rgba(255,255,255,${0.35 * light})`;
+                    ctx.fillRect(sx + 4 + (Math.sin(x * 1.3 + Date.now()/500) * 3 | 0), sy + 8, 8, 1);
+                    ctx.fillRect(sx + 12 + (Math.sin(x * 0.9 + Date.now()/700 + 1) * 3 | 0), sy + 18, 10, 1);
+                    ctx.fillRect(sx + 6 + (Math.sin(x * 1.1 + Date.now()/600 + 2) * 2 | 0), sy + 24, 6, 1);
                 } else if (t === T_TREE) {
                     // 草地底
                     ctx.fillStyle = `rgb(${r},${g},${b})`;
                     ctx.fillRect(sx, sy, TILE, TILE);
-                    // 草地装饰
                     if ((x * 31 + y * 17) % 5 === 0) {
                         ctx.fillStyle = `rgb(${Math.round(0x5f*light)},${Math.round(0xa5*light)},${Math.round(0x4a*light)})`;
                         ctx.fillRect(sx + 4, sy + 4, 2, 2);
                     }
                     // 树阴影
-                    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                    ctx.fillStyle = 'rgba(0,0,0,0.35)';
                     ctx.beginPath();
                     ctx.ellipse(sx + 16, sy + 28, 13, 4, 0, 0, Math.PI * 2);
                     ctx.fill();
-                    // 树干（更粗更明显）
+                    // 树干
                     ctx.fillStyle = '#5a3818';
                     ctx.fillRect(sx + 12, sy + 18, 8, 12);
                     ctx.fillStyle = '#6b4423';
                     ctx.fillRect(sx + 13, sy + 18, 3, 12);
-                    // 树冠（多层圆，加亮绿）
+                    // 树冠
                     ctx.fillStyle = '#1f4a14';
                     ctx.beginPath();
                     ctx.arc(sx + 16, sy + 11, 14, 0, Math.PI * 2);
@@ -685,6 +983,10 @@
                     ctx.beginPath();
                     ctx.arc(sx + 20, sy + 7, 4, 0, Math.PI * 2);
                     ctx.fill();
+                    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                    ctx.beginPath();
+                    ctx.arc(sx + 12, sy + 5, 2, 0, Math.PI * 2);
+                    ctx.fill();
                 } else if (t === T_STONE) {
                     ctx.fillStyle = `rgb(${r},${g},${b})`;
                     ctx.fillRect(sx, sy, TILE, TILE);
@@ -692,7 +994,7 @@
                         ctx.fillStyle = `rgb(${Math.round(0x5f*light)},${Math.round(0xa5*light)},${Math.round(0x4a*light)})`;
                         ctx.fillRect(sx + 4, sy + 4, 2, 2);
                     }
-                    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                    ctx.fillStyle = 'rgba(0,0,0,0.35)';
                     ctx.beginPath();
                     ctx.ellipse(sx + 16, sy + 26, 13, 3, 0, 0, Math.PI * 2);
                     ctx.fill();
@@ -708,11 +1010,26 @@
                     ctx.beginPath();
                     ctx.ellipse(sx + 12, sy + 13, 4, 3, 0, 0, Math.PI * 2);
                     ctx.fill();
+                    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                    ctx.beginPath();
+                    ctx.ellipse(sx + 12, sy + 12, 2, 1, 0, 0, Math.PI * 2);
+                    ctx.fill();
                 }
             }
         }
 
-        // 生物
+        // ====== 粒子（世界坐标）======
+        for (const p of particles) {
+            const a = Math.max(0, p.life / p.lifeMax);
+            const sx = Math.round(p.x - cam.x);
+            const sy = Math.round(p.y - cam.y);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = a;
+            ctx.fillRect(sx - p.size / 2, sy - p.size / 2, p.size, p.size);
+        }
+        ctx.globalAlpha = 1;
+
+        // ====== 生物 ======
         for (const e of entities) {
             if (e.hp <= 0) continue;
             const sx = Math.round(e.x - cam.x);
@@ -721,22 +1038,39 @@
             else drawDeer(sx, sy, e.facing, e.hitFlash > 0, dayPhase);
         }
 
-        // 玩家
+        // ====== 玩家 ======
         if (player.alive) {
             const sx = Math.round(player.x - cam.x);
             const sy = Math.round(player.y - cam.y);
-            drawPlayer(sx, sy, player.facing, player.attackAnim > 0, player.hitFlash > 0, dayPhase);
+            drawPlayer(sx, sy, player.facing, player.attackAnim > 0, player.hitFlash > 0, dayPhase, light);
         }
 
-        // 夜晚覆盖
+        // ====== 飘字（世界坐标）======
+        for (const f of floatTexts) {
+            const a = Math.max(0, f.life / f.lifeMax);
+            const sx = Math.round(f.x - cam.x);
+            const sy = Math.round(f.y - cam.y);
+            ctx.globalAlpha = a;
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.font = 'bold 13px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(f.text, sx + 1, sy + 1);
+            ctx.fillStyle = f.color;
+            ctx.fillText(f.text, sx, sy);
+        }
+        ctx.globalAlpha = 1;
+
+        // ====== 夜晚覆盖 ======
         if (light < 0.7) {
             ctx.fillStyle = `rgba(0, 0, 20, ${0.4 * (1 - light)})`;
             ctx.fillRect(0, 0, SCREEN_W, SCREEN_H);
         }
 
-        // HUD 更新
+        // ====== HUD 更新 ======
         document.getElementById('hpBar').style.width = (player.hp / player.maxHp * 100) + '%';
         document.getElementById('hungerBar').style.width = (player.hunger / player.maxHunger * 100) + '%';
+        document.getElementById('hpText').textContent = Math.round(player.hp) + ' / ' + player.maxHp;
+        document.getElementById('hungerText').textContent = Math.round(player.hunger) + ' / ' + player.maxHunger;
         document.getElementById('woodChip').textContent = '🪵 ' + player.inventory.wood;
         document.getElementById('stoneChip').textContent = '🪨 ' + player.inventory.stone;
         document.getElementById('meatChip').textContent = '🍖 ' + player.inventory.meat;
@@ -746,63 +1080,174 @@
         const hh = (totalMin / 60) | 0;
         const mm = totalMin % 60;
         const pad = n => (n < 10 ? '0' : '') + n;
-        const icon = dayPhase > 0.7 ? '☀' : (dayPhase > 0.3 ? '⛅' : '🌙');
+        const icon = dayPhase > 0.7 ? '☀️' : (dayPhase > 0.3 ? '⛅' : '🌙');
         document.getElementById('clock').textContent = `${icon} ${pad(hh)}:${pad(mm)}`;
         // 背包
         document.getElementById('invWood').textContent = player.inventory.wood;
         document.getElementById('invStone').textContent = player.inventory.stone;
         document.getElementById('invMeat').textContent = player.inventory.meat;
         document.getElementById('invFlower').textContent = player.inventory.flower;
+
+        // ====== 小地图 ======
+        renderMinimap(dayPhase, light);
     }
 
-    function drawPlayer(sx, sy, facing, attacking, hitFlash, dayPhase) {
-        const bob = Math.sin(Date.now() / 200) * 1;
+    function renderMinimap(dayPhase, light) {
+        const W = 100, H = 100;
+        miniCtx.fillStyle = '#1a3a1a';
+        miniCtx.fillRect(0, 0, W, H);
+        const sx = W / MAP_W, sy = H / MAP_H;
+        for (let y = 0; y < MAP_H; y++) {
+            for (let x = 0; x < MAP_W; x++) {
+                const t = world.tiles[y][x];
+                let c = null;
+                if (t === T_WATER) c = '#2a4a7a';
+                else if (t === T_TREE) c = '#2d5e1f';
+                else if (t === T_STONE) c = '#6b6b7a';
+                else if (t === T_FLOWER) c = '#5a8a3f';
+                else if (t === T_BUSH) c = '#3a7c2f';
+                if (c) {
+                    miniCtx.fillStyle = c;
+                    miniCtx.fillRect(x * sx, y * sy, Math.ceil(sx) + 1, Math.ceil(sy) + 1);
+                }
+            }
+        }
+        // 玩家点
+        miniCtx.fillStyle = '#4a90e2';
+        miniCtx.beginPath();
+        miniCtx.arc(player.x / TILE * sx, player.y / TILE * sy, 2, 0, Math.PI * 2);
+        miniCtx.fill();
+        // 狼（红）
+        for (const e of entities) {
+            if (e.hp <= 0) continue;
+            miniCtx.fillStyle = e.type === 'wolf' ? '#ff5252' : '#a06b3a';
+            miniCtx.fillRect(e.x / TILE * sx - 0.5, e.y / TILE * sy - 0.5, 1.5, 1.5);
+        }
+        // 视口框
+        const vx = cam.x / TILE * sx, vy = cam.y / TILE * sy;
+        const vw = SCREEN_W / TILE * sx, vh = SCREEN_H / TILE * sy;
+        miniCtx.strokeStyle = 'rgba(255,255,255,0.5)';
+        miniCtx.lineWidth = 1;
+        miniCtx.strokeRect(vx, vy, vw, vh);
+    }
+
+    function drawPlayer(sx, sy, facing, attacking, hitFlash, dayPhase, light) {
+        // 走路状态判定（玩家是否在移动）
+        const moving = (keys['w'] || keys['s'] || keys['a'] || keys['d'] || keys['arrowup'] || keys['arrowdown'] || keys['arrowleft'] || keys['arrowright']);
+        const walkT = Date.now() / 100;
+        const walkPhase = moving ? Math.sin(walkT) : 0;
+        const bob = moving ? Math.abs(Math.sin(walkT)) * 2 : Math.sin(walkT / 3) * 0.5;
         const flash = hitFlash ? '#ff8a80' : '#ffdfba';
+
         // 阴影
-        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        const shadowA = 0.35 - bob * 0.05;
+        ctx.fillStyle = `rgba(0,0,0,${shadowA})`;
         ctx.beginPath();
-        ctx.ellipse(sx, sy + 15, 10, 4, 0, 0, Math.PI * 2);
+        ctx.ellipse(sx, sy + 15 - bob * 0.5, 10, 4, 0, 0, Math.PI * 2);
         ctx.fill();
+
+        // 披风（朝 facing 反方向飘）
+        const capeAng = facing + Math.PI;
+        const capeWave = moving ? Math.sin(walkT * 1.2) * 0.3 : 0;
+        ctx.fillStyle = '#c0392b';
+        ctx.beginPath();
+        ctx.moveTo(sx - 5, sy - 2 + bob);
+        ctx.lineTo(sx + 5, sy - 2 + bob);
+        const capeTipX = sx + Math.cos(capeAng + capeWave) * 18;
+        const capeTipY = sy + Math.sin(capeAng + capeWave) * 18 + bob;
+        ctx.lineTo(capeTipX, capeTipY);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#a93226';
+        ctx.beginPath();
+        ctx.moveTo(sx - 5, sy - 2 + bob);
+        ctx.lineTo(sx + 5, sy - 2 + bob);
+        const capeTipX2 = sx + Math.cos(capeAng + capeWave) * 16;
+        const capeTipY2 = sy + Math.sin(capeAng + capeWave) * 13 + bob;
+        ctx.lineTo(capeTipX2, capeTipY2);
+        ctx.closePath();
+        ctx.fill();
+
+        // 腿（走路摆动）
+        const legSwing = walkPhase * (moving ? 3 : 0);
+        ctx.fillStyle = '#34495e';
+        ctx.fillRect(sx - 5, sy + 9 + bob + legSwing, 4, 5);
+        ctx.fillRect(sx + 1, sy + 9 + bob - legSwing, 4, 5);
+        // 鞋子
+        ctx.fillStyle = '#2c3e50';
+        ctx.fillRect(sx - 6, sy + 13 + bob + legSwing, 5, 2);
+        ctx.fillRect(sx + 0, sy + 13 + bob - legSwing, 5, 2);
+
         // 身体
         ctx.fillStyle = hitFlash ? '#ff5252' : '#4a90e2';
         ctx.fillRect(sx - 8, sy - 2 + bob, 16, 13);
         // 身体高光
         ctx.fillStyle = hitFlash ? '#ff7a7a' : '#5ea0f0';
-        ctx.fillRect(sx - 7, sy - 1 + bob, 3, 11);
+        ctx.fillRect(sx - 7, sy - 1 + bob, 2, 11);
+        // 腰带
+        ctx.fillStyle = '#5d4037';
+        ctx.fillRect(sx - 8, sy + 9 + bob, 16, 2);
+        ctx.fillStyle = '#ffd54f';
+        ctx.fillRect(sx - 1, sy + 9 + bob, 2, 2);
+
         // 头
         ctx.fillStyle = flash;
-        ctx.fillRect(sx - 7, sy - 13 + bob, 14, 12);
+        ctx.fillRect(sx - 7, sy - 14 + bob, 14, 13);
         // 头发
         ctx.fillStyle = '#3a2a1a';
-        ctx.fillRect(sx - 7, sy - 13 + bob, 14, 4);
+        ctx.fillRect(sx - 7, sy - 14 + bob, 14, 5);
+        // 头发飘动
+        if (moving) {
+            ctx.fillStyle = '#3a2a1a';
+            ctx.fillRect(sx + 4, sy - 11 + bob + Math.sin(walkT * 0.8) * 1, 3, 4);
+        }
         // 眼睛（朝 facing 方向）
         const ex = Math.cos(facing) * 1.5;
         const ey = Math.sin(facing) * 1.5;
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(sx - 4 + ex, sy - 10 + bob + ey, 2, 2);
+        ctx.fillRect(sx + 2 + ex, sy - 10 + bob + ey, 2, 2);
         ctx.fillStyle = '#222';
-        ctx.fillRect(sx - 4 + ex, sy - 9 + bob + ey, 2, 3);
-        ctx.fillRect(sx + 3 + ex, sy - 9 + bob + ey, 2, 3);
-        // 武器（朝 facing 方向挥动）
+        ctx.fillRect(sx - 3 + ex, sy - 9 + bob + ey, 1, 1);
+        ctx.fillRect(sx + 3 + ex, sy - 9 + bob + ey, 1, 1);
+
+        // 武器挥动（含剑光拖尾）
         if (attacking) {
             const wx = sx + Math.cos(facing) * 12;
             const wy = sy + Math.sin(facing) * 12;
+            // 剑光
             ctx.save();
             ctx.translate(wx, wy);
             ctx.rotate(facing);
-            ctx.fillStyle = '#bdbdbd';
-            ctx.fillRect(-2, -2, 14, 3);
+            // 拖尾
+            const tailGrad = ctx.createLinearGradient(0, 0, 16, 0);
+            tailGrad.addColorStop(0, 'rgba(255, 255, 200, 0)');
+            tailGrad.addColorStop(0.4, 'rgba(255, 255, 200, 0.6)');
+            tailGrad.addColorStop(1, 'rgba(255, 255, 255, 1)');
+            ctx.fillStyle = tailGrad;
+            ctx.fillRect(-4, -3, 20, 5);
+            // 剑身
             ctx.fillStyle = '#dcdcdc';
+            ctx.fillRect(-2, -2, 14, 3);
+            ctx.fillStyle = '#fff';
             ctx.fillRect(8, -2, 4, 3);
+            // 剑柄
             ctx.fillStyle = '#6b4423';
             ctx.fillRect(-5, -2, 4, 3);
             ctx.restore();
         } else {
-            // 静止时手持剑
-            const wx = sx + 8;
-            const wy = sy + 4;
+            // 静止/走路时持剑（手臂摆动）
+            const handBob = moving ? Math.sin(walkT) * 1.5 : 0;
+            const wx = sx + Math.cos(facing) * 8;
+            const wy = sy + Math.sin(facing) * 8 + handBob;
+            ctx.save();
+            ctx.translate(wx, wy);
+            ctx.rotate(facing);
             ctx.fillStyle = '#bdbdbd';
-            ctx.fillRect(wx, wy - 1, 6, 2);
+            ctx.fillRect(-2, -1, 6, 2);
             ctx.fillStyle = '#6b4423';
-            ctx.fillRect(wx - 2, wy - 1, 2, 2);
+            ctx.fillRect(-4, -1, 2, 2);
+            ctx.restore();
         }
     }
 
@@ -894,6 +1339,7 @@
         updatePlayer(dt);
         updateEntities(dt);
         updateWorld(dt);
+        updateParticles(dt);
         updateCam();
         render();
         // 自动存档
