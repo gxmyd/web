@@ -9,9 +9,27 @@
     <style>
         * { box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #f4f4f9; color: #333; margin: 0; padding: 0 16px 40px; }
-        .topbar { max-width: 960px; margin: 20px auto 0; padding: 12px 20px; background: #ccc; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: left; }
-        .topbar button { padding: 8px 18px; font-size: 14px; border: none; border-radius: 5px; background: #4a90e2; color: #fff; cursor: pointer; }
-        .topbar button:hover { background: #357ABD; }
+        .topbar { max-width: 960px; margin: 20px auto 0; padding: 4px 20px;     }
+        .topbar button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            font-size: 15px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            background: #fff;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, color 0.15s;
+        }
+        .topbar button:hover {
+            transform: translateX(-2px);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+            border-color: #4a90e2;
+            color: #4a90e2;
+        }
         .container { max-width: 960px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         h1 { color: #4a90e2; margin: 0 0 16px; text-align: center; }
         .controls { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin: 16px 0; }
@@ -31,7 +49,7 @@
     </style>
 </head>
 <body>
-    <div class="topbar"><button onclick="window.location.href='../index.html'">返回工具页</button></div>
+    <div class="topbar"><button onclick="window.location.href='../index.html'">← 返回工具页</button></div>
     <div class="container">
         <h1>图片格式转换</h1>
         <div class="controls">
@@ -131,4 +149,7 @@
     </script>
 </body>
 </html>
+
+
+
 
