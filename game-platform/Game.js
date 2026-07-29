@@ -25,41 +25,41 @@ const userKeys = {
 };
 
 const specialKeys = {
-  8:'Backspace',
+  8:'退格',
   9:'Tab',
-  13:'Enter',
+  13:'回车',
   16:'Shift',
   17:'Ctrl',
   18:'Alt',
   19:'Pause/break',
-  20:'Caps lock',
-  27: 'Escape',
-  32:'Space',
-  33:'Page up',
-  34:'Page down',
+  20:'大小写',
+  27: 'Esc',
+  32:'空格',
+  33:'上页',
+  34:'下页',
   35:'End',
   36:'Home',
-  37:'Left',
-  38:'Up',
-  39:'Right',
-  40:'Down',
+  37:'左',
+  38:'上',
+  39:'右',
+  40:'下',
   45:'Insert',
   46:'Delete',
-  91:'LeftwinKey',
-  92:'RightwinKey',
-  106:'Multiply',
-  107:'Add',
-  111:'Divide',
-  187:'Equal',
-  188:'Comma',
-  189:'Dash',
-  190:'Period',
-  191:'Slash',
-  192:'GraveAccent',
-  219:'OpenBracket',
-  220:'BackSlash',
-  221:'CloseBraket',
-  222:'SingleQuote'
+  91:'左Win',
+  92:'右Win',
+  106:'*',
+  107:'+',
+  111:'/',
+  187:'=',
+  188:',',
+  189:'-',
+  190:'.',
+  191:'/',
+  192:'`',
+  219:'[',
+  220:'\\',
+  221:']',
+  222:'\''
 };
 
 const LEVEL_ENEMIES = [ //The y2 variable dictates how high up the unit starts
@@ -335,7 +335,17 @@ function dispMess(id,type){
   if(type === 'SOUND'){
     muteMusic();
   }else{
-    document.getElementById('mess').innerHTML = 'Press the key you want to use for '+'"'+type+'"';
+    const labels = {
+      UP:'上',
+      DOWN:'下',
+      LEFT:'左',
+      RIGHT:'右',
+      SPACE:'空格',
+      PAUSE:'暂停',
+      SND:'音效'
+    };
+    const label = labels[type] || type;
+    document.getElementById('mess').innerHTML = '请按你想用作「' + label + '」的键';
     optionId= id;
   }
 }
@@ -353,7 +363,7 @@ function changeOption(key){
   }else if(keysPressed[userKeys.M] && optionId !== 'M'){
     dispMess('M','SOUND');
   }else{
-    document.getElementById('mess').innerHTML = 'You can\'t use this key';
+    document.getElementById('mess').innerHTML = '这个键无法使用';
   }
 }
 
@@ -478,7 +488,7 @@ function startLevel() {
 
   highscoreBoard = new Component();
   highscoreBoard.init('20px', 'Consolas', 'black', 20, 40, 'text', WALKING);
-  highscoreBoard.text = 'HIGHSCORE:' + highscore;
+  highscoreBoard.text = '最高分：' + highscore;
 
   //startArrow
   startArrow1 = new Component();
@@ -945,8 +955,8 @@ function updateGameArea() {
       var levelTransitionModal = document.getElementById('levelTransitionModal');
       levelTransitionModal.style.display = 'block';
       var levelTransitionModalContent = document.getElementById('levelTransitionModalContent');
-      levelTransitionModalContent.innerHTML += `<p id="coinMessage" class="levelTransitionMessage">Coins earned: ${currentCoins}</p>`;
-      levelTransitionModalContent.innerHTML += `<p id="pointsMessage" class="levelTransitionMessage">Points earned: ${currentScore}</p>`;
+      levelTransitionModalContent.innerHTML += `<p id="coinMessage" class="levelTransitionMessage">获得金币：${currentCoins}</p>`;
+      levelTransitionModalContent.innerHTML += `<p id="pointsMessage" class="levelTransitionMessage">获得分数：${currentScore}</p>`;
     }
   }
 
@@ -1015,7 +1025,7 @@ function updateGameArea() {
   }
 
   //score update
-  scoreBoard.text = 'SCORE: ' + score;
+  scoreBoard.text = '分数：' + score;
   scoreBoard.update();
 
   //collected coins update
@@ -1041,7 +1051,7 @@ function updateGameArea() {
   incrementTime(2);
 
   //LevelDisplay update
-  levelDisplay.text = 'Level ' + currentLevel;
+  levelDisplay.text = '第 ' + currentLevel + ' 关';
   levelDisplay.update();
 
   //enemy update
