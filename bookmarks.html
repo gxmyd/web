@@ -38,240 +38,244 @@
             border-color: var(--accent);
             color: var(--accent);
         }
-        .section {
+        h1 {
             max-width: 1100px;
-            margin: 30px auto;
+            margin: 32px auto 8px;
             padding: 0 20px;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text);
         }
+        .subtitle {
+            max-width: 1100px;
+            margin: 0 auto 28px;
+            padding: 0 20px;
+            color: var(--text);
+            opacity: 0.6;
+            font-size: 14px;
+        }
+        .section { max-width: 1100px; margin: 0 auto 32px; padding: 0 20px; }
         .section-title {
             font-size: 18px;
             font-weight: 600;
             color: var(--text);
-            margin: 0 0 14px;
-            padding-left: 10px;
+            margin: 0 0 16px;
+            padding-left: 12px;
             border-left: 4px solid var(--accent);
         }
         .subsection-title {
             font-size: 14px;
             font-weight: 500;
-            color: var(--text-soft);
-            margin: 16px 0 8px;
+            color: var(--text);
+            opacity: 0.75;
+            margin: 16px 0 10px;
         }
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 10px;
+            gap: 12px;
         }
         .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 14px 14px;
-            text-decoration: none;
-            color: var(--text);
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 44px;
+            min-height: 56px;
+            padding: 12px 14px;
+            background: var(--card);
+            color: var(--text);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            border-radius: 10px;
             box-shadow: var(--shadow);
-            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, color 0.15s;
             text-align: center;
-            font-size: 14px;
+            word-break: break-word;
         }
         .card:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-hover);
             border-color: var(--accent);
+            color: var(--accent);
+        }
+        .card .name {
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+            h1 { font-size: 20px; }
         }
     </style>
 </head>
 <body>
     <div class="topbar">
         <a href="index.html">← 返回首页</a>
-        <button id="themeToggle">🌙 暗色</button>
+        <button id="themeToggle" type="button">🌙 暗色</button>
+    </div>
+    <h1>🔖 书签</h1>
+    <p class="subtitle">从浏览器收藏夹整理</p>
+    <div class="section">
+        <div class="section-title">📺 电视台</div>
+        <div class="grid">
+          <a class="card" href="https://tv.cctv.com/live/index.shtml?spm=C28340.PdNvWY0LYxCP.E3alv6pYzpwM.1" target="_blank" rel="noopener">
+            <div class="name">直播大全_CCTV节目官网_央视网</div>
+          </a>
+          <a class="card" href="https://www.qtfm.cn/radiopage/3/1" target="_blank" rel="noopener">
+            <div class="name">北京广播电台-北京电台在线收听-蜻蜓FM电台</div>
+          </a>
+        </div>
     </div>
 
     <div class="section">
-        <div class="section-title">🔖 鐢佃鍙�</div>
+        <div class="section-title">🛠️ 工具</div>
         <div class="grid">
-        <a class="card" href="https://tv.cctv.com/live/index.shtml?spm=C28340.PdNvWY0LYxCP.E3alv6pYzpwM.1" target="_blank">
-          <div class="name">鐩存挱澶у叏_CCTV鑺傜洰瀹樼綉_澶缃�</div>
-        </a>
-        <a class="card" href="https://www.qtfm.cn/radiopage/3/1" target="_blank">
-          <div class="name">鍖椾含骞挎挱鐢靛彴-鍖椾含鐢靛彴鍦ㄧ嚎鏀跺惉-铚昏湏FM鐢靛彴</div>
-        </a>
+          <a class="card" href="https://www.processon.com/" target="_blank" rel="noopener">
+            <div class="name">ProcessOn思维导图流程图-在线画思维导图流程图_在线作图实时协作</div>
+          </a>
+          <a class="card" href="https://www.alipansou.com/" target="_blank" rel="noopener">
+            <div class="name">猫狸盘搜 - 阿里云盘搜索神器</div>
+          </a>
+          <a class="card" href="https://squoosh.app/" target="_blank" rel="noopener">
+            <div class="name">Squoosh图片压缩</div>
+          </a>
+          <a class="card" href="https://www.yunso.net/" target="_blank" rel="noopener">
+            <div class="name">小云搜索 - 盘搜搜 - 蓝奏云 - 阿里云盘夸克网盘云盘工具导航平台 | 网盘搜索引擎</div>
+          </a>
+          <a class="card" href="https://www.apihz.cn/user/index.php" target="_blank" rel="noopener">
+            <div class="name">接口盒子 - 后台</div>
+          </a>
+          <a class="card" href="https://www.pcsoft.com.cn/" target="_blank" rel="noopener">
+            <div class="name">PC下载网—官方软件下载大全_绿色免费软件下载网站</div>
+          </a>
         </div>
     </div>
+
     <div class="section">
-        <div class="section-title">🔖 宸ュ叿</div>
-        <div class="subsection-title">闆疯揪</div>
+        <div class="section-title">🤖 AI助手</div>
         <div class="grid">
-        <a class="card" href="http://10.0.4.20:8080/AlarmHistory" target="_blank">
-          <div class="name">閾佽矾瑙嗛鏅鸿兘鐩戞帶绯荤粺</div>
-        </a>
-        <a class="card" href="http://192.168.1.108/#/index/Preview/" target="_blank">
-          <div class="name">鐩磋繛鐩告満</div>
-        </a>
-        <a class="card" href="http://172.168.1.10:8675/logFiles" target="_blank">
-          <div class="name">鐩磋繛闆疯揪</div>
-        </a>
-        <a class="card" href="https://192.168.1.1/#/status" target="_blank">
-          <div class="name">鐩磋繛璺敱鍣�</div>
-        </a>
-        </div>
-        <div class="grid">
-        <a class="card" href="https://www.processon.com/" target="_blank">
-          <div class="name">ProcessOn鎬濈淮瀵煎浘娴佺▼鍥�-鍦ㄧ嚎鐢绘�濈淮瀵煎浘娴佺▼鍥綺鍦ㄧ嚎浣滃浘瀹炴椂鍗忎綔</div>
-        </a>
-        <a class="card" href="https://www.alipansou.com/" target="_blank">
-          <div class="name">鐚嫺鐩樻悳 - 闃块噷浜戠洏鎼滅储绁炲櫒</div>
-        </a>
-        <a class="card" href="https://squoosh.app/" target="_blank">
-          <div class="name">Squoosh鍥剧墖鍘嬬缉</div>
-        </a>
-        <a class="card" href="https://www.yunso.net/" target="_blank">
-          <div class="name">灏忎簯鎼滅储 - 鐩樻悳鎼� - 钃濆浜� - 闃块噷浜戠洏澶稿厠缃戠洏浜戠洏宸ュ叿瀵艰埅骞冲彴 | 缃戠洏鎼滅储寮曟搸</div>
-        </a>
-        <a class="card" href="https://www.apihz.cn/user/index.php" target="_blank">
-          <div class="name">鎺ュ彛鐩掑瓙 - 鍚庡彴</div>
-        </a>
-        <a class="card" href="https://www.pcsoft.com.cn/" target="_blank">
-          <div class="name">PC涓嬭浇缃戔�斿畼鏂硅蒋浠朵笅杞藉ぇ鍏╛缁胯壊鍏嶈垂杞欢涓嬭浇缃戠珯</div>
-        </a>
+          <a class="card" href="https://www.doubao.com/chat/" target="_blank" rel="noopener">
+            <div class="name">豆包 - 你的 AI 朋友</div>
+          </a>
+          <a class="card" href="https://chat.baidu.com/?enter_type=yiyan_site" target="_blank" rel="noopener">
+            <div class="name">百度文心助手</div>
+          </a>
+          <a class="card" href="https://chat.chat826.com/#/home" target="_blank" rel="noopener">
+            <div class="name">chat8</div>
+          </a>
+          <a class="card" href="https://ymi.ai/#/chat/chating" target="_blank" rel="noopener">
+            <div class="name">YMI.AI</div>
+          </a>
+          <a class="card" href="https://xinghuo.xfyun.cn/desk" target="_blank" rel="noopener">
+            <div class="name">星火大模型</div>
+          </a>
+          <a class="card" href="https://jimeng.jianying.com/ai-tool/home" target="_blank" rel="noopener">
+            <div class="name">即梦AI - 一站式AI创作平台</div>
+          </a>
+          <a class="card" href="https://www.kimi.com/" target="_blank" rel="noopener">
+            <div class="name">Kimi AI 官网 - K2.6 上线</div>
+          </a>
+          <a class="card" href="https://chat.openai.com/c/fcc1d284-ae15-4270-b63c-562df0a05208" target="_blank" rel="noopener">
+            <div class="name">ChatGPT</div>
+          </a>
+          <a class="card" href="https://chat.deepseek.com/" target="_blank" rel="noopener">
+            <div class="name">DeepSeek</div>
+          </a>
         </div>
     </div>
+
     <div class="section">
-        <div class="section-title">🔖 AI鍔╂墜</div>
+        <div class="section-title">📦 汇总</div>
         <div class="grid">
-        <a class="card" href="https://www.doubao.com/chat/" target="_blank">
-          <div class="name">璞嗗寘 - 浣犵殑 AI 鏈嬪弸</div>
-        </a>
-        <a class="card" href="https://chat.baidu.com/?enter_type=yiyan_site" target="_blank">
-          <div class="name">鐧惧害鏂囧績鍔╂墜</div>
-        </a>
-        <a class="card" href="https://chat.chat826.com/#/home" target="_blank">
-          <div class="name">chat8</div>
-        </a>
-        <a class="card" href="https://ymi.ai/#/chat/chating" target="_blank">
-          <div class="name">YMI.AI</div>
-        </a>
-        <a class="card" href="https://xinghuo.xfyun.cn/desk" target="_blank">
-          <div class="name">鏄熺伀澶фā鍨�</div>
-        </a>
-        <a class="card" href="https://jimeng.jianying.com/ai-tool/home" target="_blank">
-          <div class="name">鍗虫ⅵAI - 涓�绔欏紡AI鍒涗綔骞冲彴</div>
-        </a>
-        <a class="card" href="https://www.kimi.com/" target="_blank">
-          <div class="name">Kimi AI 瀹樼綉 - K2.6 涓婄嚎</div>
-        </a>
-        <a class="card" href="https://chat.openai.com/c/fcc1d284-ae15-4270-b63c-562df0a05208" target="_blank">
-          <div class="name">ChatGPT</div>
-        </a>
-        <a class="card" href="https://chat.deepseek.com/" target="_blank">
-          <div class="name">DeepSeek</div>
-        </a>
+          <a class="card" href="https://tempmail.plus/zh/#!" target="_blank" rel="noopener">
+            <div class="name">一次性临时电子邮件 - TempMail.Plus</div>
+          </a>
+          <a class="card" href="https://lbsyun.baidu.com/apiconsole/center" target="_blank" rel="noopener">
+            <div class="name">控制台 | 百度地图开放平台</div>
+          </a>
+          <a class="card" href="https://www.imsdn.cn/" target="_blank" rel="noopener">
+            <div class="name">MSDN原版系统,纯净镜像,MSDN ISO下载 - 我的MSDN</div>
+          </a>
+        </div>
+        <div class="subsection-title">电影</div>
+        <div class="grid">
+          <a class="card" href="https://www.gying.org/" target="_blank" rel="noopener">
+            <div class="name">观影 GYING</div>
+          </a>
+        </div>
+        <div class="subsection-title">游戏</div>
+        <div class="grid">
+          <a class="card" href="https://flingtrainer.com/" target="_blank" rel="noopener">
+            <div class="name">FLiNG Trainer - PC Game Cheats and Mods</div>
+          </a>
+          <a class="card" href="https://www.yxk111.com/" target="_blank" rel="noopener">
+            <div class="name">玩丫游戏_全球单机游戏交流中心</div>
+          </a>
+          <a class="card" href="http://www.wyzhushou.com/" target="_blank" rel="noopener">
+            <div class="name">CF活动助手网页版_穿越火线活动一键领取_在线领取【首页】</div>
+          </a>
+          <a class="card" href="https://www.3dmgame.com/" target="_blank" rel="noopener">
+            <div class="name">单机游戏_单机游戏下载_单机游戏大全中文版下载_3DM游戏网</div>
+          </a>
+        </div>
+        <div class="subsection-title">应用</div>
+        <div class="grid">
+          <a class="card" href="https://app.writesonic.com/signup?feature=chatsonic&amp;with_password=true" target="_blank" rel="noopener">
+            <div class="name">Sign Up | Writesonic - Best AI Writing Tool</div>
+          </a>
+          <a class="card" href="https://dash.cloudflare.com/06f3da38e899cb3ee5797fb9d40cb16b/dangdu.eu.org/dns/records" target="_blank" rel="noopener">
+            <div class="name">记录 | 域名解析 | dangdu.eu.org | 2843057956@qq.com&#x27;s Account | Cloudflare</div>
+          </a>
+          <a class="card" href="https://mp.weixin.qq.com/s?__biz=Mzg2NTAzMTExNg==&amp;mid=2247484004&amp;idx=1&amp;sn=cef9d881d0a8d7db7e8ddc6a380a9a76&amp;scene=19#wechat_redirect" target="_blank" rel="noopener">
+            <div class="name">ho</div>
+          </a>
+          <a class="card" href="https://www.bootcss.com/p/layoutit/" target="_blank" rel="noopener">
+            <div class="name">Bootstrap可视化布局系统</div>
+          </a>
+          <a class="card" href="https://mvnrepository.com/" target="_blank" rel="noopener">
+            <div class="name">Maven Repository: Search/Browse/Explore</div>
+          </a>
+        </div>
+        <div class="subsection-title">前端框架</div>
+        <div class="grid">
+          <a class="card" href="https://vant-contrib.gitee.io/vant/v2/#/zh-CN/button" target="_blank" rel="noopener">
+            <div class="name">Vant 2 - 轻量、可靠的移动端组件库</div>
+          </a>
+          <a class="card" href="https://element.eleme.cn/#/zh-CN/component/button" target="_blank" rel="noopener">
+            <div class="name">组件 | Element</div>
+          </a>
+        </div>
+        <div class="subsection-title">文档</div>
+        <div class="grid">
+          <a class="card" href="http://mp.weixin.qq.com/mp/homepage?__biz=Mzg2NTAzMTExNg==&amp;hid=3&amp;sn=456dc4d66f0726730757e319ffdaa23e&amp;scene=18#wechat_redirect" target="_blank" rel="noopener">
+            <div class="name">狂神说SSM、MVC</div>
+          </a>
+          <a class="card" href="https://docs.oracle.com/en/java/javase/16/docs/api/index.html" target="_blank" rel="noopener">
+            <div class="name">Overview (Java SE 16 &amp; JDK 16)</div>
+          </a>
+          <a class="card" href="https://docs.spring.io/spring-framework/docs/current/reference/html/core.html" target="_blank" rel="noopener">
+            <div class="name">Core Technologies</div>
+          </a>
+          <a class="card" href="https://blog.csdn.net/weixin_44751434/article/details/119358203?spm=1001.2014.3001.5501" target="_blank" rel="noopener">
+            <div class="name">(8条消息) SpringMVC学习笔记_yamky_的博客-CSDN博客</div>
+          </a>
+          <a class="card" href="https://mowangblog.github.io/SpringMVC-Demo/#/?id=%e4%b8%80%e3%80%81springmvc%e7%ae%80%e4%bb%8b" target="_blank" rel="noopener">
+            <div class="name">Document</div>
+          </a>
+          <a class="card" href="https://gitee.com/shigen/spring-boot--vue#12-%E4%BE%9D%E8%B5%96%E5%8C%85%E7%9A%84%E5%AE%89%E8%A3%85" target="_blank" rel="noopener">
+            <div class="name">spring boot+Vue: spring boot + vue 前后端分离代码</div>
+          </a>
+        </div>
+        <div class="subsection-title">图片网站</div>
+        <div class="grid">
+          <a class="card" href="https://unsplash.com/" target="_blank" rel="noopener">
+            <div class="name">Beautiful Free Images &amp; Pictures | Unsplash</div>
+          </a>
+          <a class="card" href="https://www.pexels.com/zh-cn/" target="_blank" rel="noopener">
+            <div class="name">免费素材图片</div>
+          </a>
         </div>
     </div>
-    <div class="section">
-        <div class="section-title">🔖 姹囨��</div>
-        <div class="subsection-title">鐢靛奖</div>
-        <div class="grid">
-        <a class="card" href="https://www.gying.org/" target="_blank">
-          <div class="name">瑙傚奖 GYING</div>
-        </a>
-        </div>
-        <div class="subsection-title">娓告垙</div>
-        <div class="grid">
-        <a class="card" href="https://flingtrainer.com/" target="_blank">
-          <div class="name">FLiNG Trainer - PC Game Cheats and Mods</div>
-        </a>
-        <a class="card" href="https://www.yxk111.com/" target="_blank">
-          <div class="name">鐜╀斧娓告垙_鍏ㄧ悆鍗曟満娓告垙浜ゆ祦涓績</div>
-        </a>
-        <a class="card" href="http://www.wyzhushou.com/" target="_blank">
-          <div class="name">CF娲诲姩鍔╂墜缃戦〉鐗坃绌胯秺鐏嚎娲诲姩涓�閿鍙朹鍦ㄧ嚎棰嗗彇銆愰椤点��</div>
-        </a>
-        <a class="card" href="https://www.3dmgame.com/" target="_blank">
-          <div class="name">鍗曟満娓告垙_鍗曟満娓告垙涓嬭浇_鍗曟満娓告垙澶у叏涓枃鐗堜笅杞絖3DM娓告垙缃�</div>
-        </a>
-        </div>
-        <div class="subsection-title">搴旂敤</div>
-        <div class="grid">
-        <a class="card" href="https://app.writesonic.com/signup?feature=chatsonic&with_password=true" target="_blank">
-          <div class="name">Sign Up | Writesonic - Best AI Writing Tool</div>
-        </a>
-        <a class="card" href="https://dash.cloudflare.com/06f3da38e899cb3ee5797fb9d40cb16b/dangdu.eu.org/dns/records" target="_blank">
-          <div class="name">璁板綍 | 鍩熷悕瑙ｆ瀽 | dangdu.eu.org | 2843057956@qq.com&#39;s Account | Cloudflare</div>
-        </a>
-        <a class="card" href="https://mp.weixin.qq.com/s?__biz=Mzg2NTAzMTExNg==&mid=2247484004&idx=1&sn=cef9d881d0a8d7db7e8ddc6a380a9a76&scene=19#wechat_redirect" target="_blank">
-          <div class="name">ho</div>
-        </a>
-        <a class="card" href="https://www.bootcss.com/p/layoutit/" target="_blank">
-          <div class="name">Bootstrap鍙鍖栧竷灞�绯荤粺</div>
-        </a>
-        <a class="card" href="https://mvnrepository.com/" target="_blank">
-          <div class="name">Maven Repository: Search/Browse/Explore</div>
-        </a>
-        </div>
-        <div class="subsection-title">鍓嶇妗嗘灦</div>
-        <div class="grid">
-        <a class="card" href="https://vant-contrib.gitee.io/vant/v2/#/zh-CN/button" target="_blank">
-          <div class="name">Vant 2 - 杞婚噺銆佸彲闈犵殑绉诲姩绔粍浠跺簱</div>
-        </a>
-        <a class="card" href="https://element.eleme.cn/#/zh-CN/component/button" target="_blank">
-          <div class="name">缁勪欢 | Element</div>
-        </a>
-        </div>
-        <div class="subsection-title">鏂囨。</div>
-        <div class="grid">
-        <a class="card" href="http://mp.weixin.qq.com/mp/homepage?__biz=Mzg2NTAzMTExNg==&hid=3&sn=456dc4d66f0726730757e319ffdaa23e&scene=18#wechat_redirect" target="_blank">
-          <div class="name">鐙傜璇碨SM銆丮VC</div>
-        </a>
-        <a class="card" href="https://docs.oracle.com/en/java/javase/16/docs/api/index.html" target="_blank">
-          <div class="name">Overview (Java SE 16 & JDK 16)</div>
-        </a>
-        <a class="card" href="https://docs.spring.io/spring-framework/docs/current/reference/html/core.html" target="_blank">
-          <div class="name">Core Technologies</div>
-        </a>
-        <a class="card" href="https://blog.csdn.net/weixin_44751434/article/details/119358203?spm=1001.2014.3001.5501" target="_blank">
-          <div class="name">(8鏉℃秷鎭�) SpringMVC瀛︿範绗旇_yamky_鐨勫崥瀹�-CSDN鍗氬</div>
-        </a>
-        <a class="card" href="https://mowangblog.github.io/SpringMVC-Demo/#/?id=%e4%b8%80%e3%80%81springmvc%e7%ae%80%e4%bb%8b" target="_blank">
-          <div class="name">Document</div>
-        </a>
-        <a class="card" href="https://gitee.com/shigen/spring-boot--vue#12-%E4%BE%9D%E8%B5%96%E5%8C%85%E7%9A%84%E5%AE%89%E8%A3%85" target="_blank">
-          <div class="name">spring boot+Vue: spring boot + vue 鍓嶅悗绔垎绂讳唬鐮�</div>
-        </a>
-        </div>
-        <div class="subsection-title">鍥剧墖缃戠珯</div>
-        <div class="grid">
-        <a class="card" href="https://unsplash.com/" target="_blank">
-          <div class="name">Beautiful Free Images & Pictures | Unsplash</div>
-        </a>
-        <a class="card" href="https://www.pexels.com/zh-cn/" target="_blank">
-          <div class="name">鍏嶈垂绱犳潗鍥剧墖</div>
-        </a>
-        </div>
-        <div class="grid">
-        <a class="card" href="https://tempmail.plus/zh/#!" target="_blank">
-          <div class="name">涓�娆℃�т复鏃剁數瀛愰偖浠� - TempMail.Plus</div>
-        </a>
-        <a class="card" href="https://lbsyun.baidu.com/apiconsole/center" target="_blank">
-          <div class="name">鎺у埗鍙� | 鐧惧害鍦板浘寮�鏀惧钩鍙�</div>
-        </a>
-        <a class="card" href="https://www.imsdn.cn/" target="_blank">
-          <div class="name">MSDN鍘熺増绯荤粺,绾噣闀滃儚,MSDN ISO涓嬭浇 - 鎴戠殑MSDN</div>
-        </a>
-        </div>
-    </div>
-    <div class="section">
-        <div class="section-title">⭐ 收藏</div>
-        <div class="grid">
-        <a class="card" href="https://bailian.console.aliyun.com/cn-beijing/?tab=costing-balance&source_channel=hy_qwen#/costing-balance/free-quota" target="_blank">
-          <div class="name">澶фā鍨嬫湇鍔″钩鍙扮櫨鐐兼帶鍒跺彴</div>
-        </a>
-        </div>
-    </div>
+
 
     <script src="tools/_theme.js"></script>
 </body>
