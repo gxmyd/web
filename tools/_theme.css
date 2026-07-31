@@ -1,0 +1,105 @@
+/* 工具子页面共享主题：变量 + 暗色模式 + 基础元素
+   与首页 index.html 共用 localStorage('theme')，key = 'dark' | 'light'
+   在 <head> 顶部 link 在工具自带的 <style> 之前 */
+
+:root {
+    --bg: #f4f6fb;
+    --bg-grad-1: #e0e7ff;
+    --bg-grad-2: #fce7f3;
+    --text: #1f2937;
+    --text-soft: #555;
+    --text-mute: #888;
+    --card: #ffffff;
+    --border: #ddd;
+    --border-soft: #eee;
+    --shadow: 0 4px 20px rgba(0,0,0,0.06);
+    --shadow-hover: 0 10px 28px rgba(0,0,0,0.12);
+    --accent: #4a90e2;
+    --accent-2: #357ABD;
+    --code-bg: #fafafa;
+    --soft-bg: #f8f9fc;
+    --disabled-bg: #ccc;
+    --highlight-bg: #fff3e0;
+    --highlight-text: #d84315;
+    --highlight-border: #ff8e53;
+    --err-bg: #fee;
+    --err-text: #c62828;
+    --err-border: #f44336;
+    --success: #4caf50;
+    --warning: #f44336;
+    --pub-bg: #e3f2fd;
+    --pub-text: #1565c0;
+    --priv-bg: #fff3e0;
+    --priv-text: #ef6c00;
+    --special-bg: #f3e5f5;
+    --special-text: #6a1b9a;
+    --input-bg: #ffffff;
+    --input-border: #ddd;
+}
+
+[data-theme="dark"] {
+    --bg: #0f1115;
+    --bg-grad-1: #1a1d2b;
+    --bg-grad-2: #2a1a2b;
+    --text: #e5e7eb;
+    --text-soft: #9ca3af;
+    --text-mute: #6b7280;
+    --card: #1c1f29;
+    --border: rgba(255,255,255,0.12);
+    --border-soft: rgba(255,255,255,0.06);
+    --shadow: 0 4px 20px rgba(0,0,0,0.4);
+    --shadow-hover: 0 10px 28px rgba(0,0,0,0.6);
+    --accent: #5ea0f0;
+    --accent-2: #4a8ad6;
+    --code-bg: #161922;
+    --soft-bg: #161922;
+    --disabled-bg: #3a3f4d;
+    --highlight-bg: #2a1f12;
+    --highlight-text: #ffb088;
+    --highlight-border: #d77a3a;
+    --err-bg: #2a1212;
+    --err-text: #f48a8a;
+    --err-border: #d14545;
+    --success: #66bb6a;
+    --warning: #ef5350;
+    --pub-bg: #1a2733;
+    --pub-text: #6db5f0;
+    --priv-bg: #2a1f12;
+    --priv-text: #f0a368;
+    --special-bg: #1f1429;
+    --special-text: #c39bd3;
+    --input-bg: #161922;
+    --input-border: rgba(255,255,255,0.12);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+    background: var(--bg);
+    background-image: radial-gradient(at 20% 10%, var(--bg-grad-1) 0%, transparent 50%),
+                      radial-gradient(at 80% 80%, var(--bg-grad-2) 0%, transparent 50%);
+    background-attachment: fixed;
+    color: var(--text);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* 基础控件暗色适配（浏览器原生） */
+input, select, textarea, button {
+    font-family: inherit;
+}
+input[type=text], input[type=number], input[type=password], select, textarea {
+    background: var(--input-bg);
+    color: var(--text);
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    padding: 6px 10px;
+    transition: border-color 0.15s, background-color 0.3s, color 0.3s;
+}
+input[type=text]:focus, input[type=number]:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+input[type=file] {
+    color: var(--text);
+}
+input[type=range] { accent-color: var(--accent); }
+::placeholder { color: var(--text-mute); opacity: 1; }

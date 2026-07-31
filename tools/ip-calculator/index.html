@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%AD%3C/text%3E%3C/svg%3E">
     <title>IP 子网计算器</title>
-    <style>
+        <link rel="stylesheet" href="../_theme.css">
+<style>
         * { box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif; background: #f4f6fb; color: #1f2937; margin: 0; padding: 0 16px 40px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0 16px 40px; }
         .topbar { max-width: 960px; margin: 20px auto 0; padding: 4px 20px;    }
         .topbar button {
             display: inline-flex;
@@ -16,10 +17,10 @@
             gap: 6px;
             padding: 10px 20px;
             font-size: 15px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border);
             border-radius: 24px;
-            background: #fff;
-            color: #333;
+            background: var(--card);
+            color: var(--text);;
             cursor: pointer;
             box-shadow: 0 4px 20px rgba(0,0,0,0.06);
             transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, color 0.15s;
@@ -27,35 +28,35 @@
         .topbar button:hover {
             transform: translateX(-2px);
             box-shadow: 0 10px 28px rgba(0,0,0,0.12);
-            border-color: #4a90e2;
-            color: #4a90e2;
+            border-color: var(--accent);
+            color: var(--accent);
         }
-        .container { max-width: 960px; margin: 20px auto; padding: 24px; background: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1 { color: #4a90e2; margin: 0 0 8px; text-align: center; }
-        .sub { text-align: center; color: #888; font-size: 13px; margin-bottom: 24px; }
+        .container { max-width: 960px; margin: 20px auto; padding: 24px; background: var(--card); border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: var(--accent); margin: 0 0 8px; text-align: center; }
+        .sub { text-align: center; color: var(--text-mute); font-size: 13px; margin-bottom: 24px; }
         .input-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; }
-        .input-row label { font-size: 14px; color: #555; }
-        .input-row input { flex: 1; min-width: 200px; padding: 12px 14px; font-size: 16px; font-family: 'Consolas', 'Monaco', monospace; border: 1px solid #ddd; border-radius: 6px; outline: none; }
-        .input-row input:focus { border-color: #4a90e2; }
-        .btn { padding: 12px 24px; font-size: 14px; border: none; border-radius: 5px; background: #4a90e2; color: #fff; cursor: pointer; }
-        .btn:hover { background: #357ABD; }
+        .input-row label { font-size: 14px; color: var(--text-soft); }
+        .input-row input { flex: 1; min-width: 200px; padding: 12px 14px; font-size: 16px; font-family: 'Consolas', 'Monaco', monospace; border: 1px solid var(--border); border-radius: 6px; outline: none; }
+        .input-row input:focus { border-color: var(--accent); }
+        .btn { padding: 12px 24px; font-size: 14px; border: none; border-radius: 5px; background: var(--accent); color: #fff; cursor: pointer; }
+        .btn:hover { background: var(--accent-2); }
         .presets { margin-bottom: 20px; }
-        .presets span { font-size: 13px; color: #888; margin-right: 8px; }
-        .presets button { padding: 5px 10px; font-size: 12px; border: 1px solid #ddd; background: #fff; color: #4a90e2; border-radius: 4px; cursor: pointer; margin-right: 6px; margin-bottom: 4px; }
-        .presets button:hover { background: #4a90e2; color: #fff; }
+        .presets span { font-size: 13px; color: var(--text-mute); margin-right: 8px; }
+        .presets button { padding: 5px 10px; font-size: 12px; border: 1px solid var(--border); background: var(--card); color: var(--accent); border-radius: 4px; cursor: pointer; margin-right: 6px; margin-bottom: 4px; }
+        .presets button:hover { background: var(--accent); color: #fff; }
         .results { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
-        .item { background: #f8f9fc; border-left: 3px solid #4a90e2; padding: 12px 14px; border-radius: 4px; }
-        .item .lbl { font-size: 12px; color: #888; margin-bottom: 4px; }
-        .item .val { font-family: 'Consolas', 'Monaco', monospace; font-size: 15px; color: #1f2937; word-break: break-all; }
-        .item.highlight { background: #fff3e0; border-left-color: #ff8e53; }
-        .item.highlight .val { color: #d84315; font-weight: bold; }
-        .err { background: #fee; border-left-color: #f44336; color: #c62828; padding: 12px 14px; border-radius: 4px; font-size: 14px; display: none; }
+        .item { background: var(--soft-bg); border-left: 3px solid var(--accent); padding: 12px 14px; border-radius: 4px; }
+        .item .lbl { font-size: 12px; color: var(--text-mute); margin-bottom: 4px; }
+        .item .val { font-family: 'Consolas', 'Monaco', monospace; font-size: 15px; color: var(--text); word-break: break-all; }
+        .item.highlight { background: var(--highlight-bg); border-left-color: var(--highlight-border); }
+        .item.highlight .val { color: var(--highlight-text); font-weight: bold; }
+        .err { background: var(--err-bg); border-left-color: var(--err-border); color: var(--err-text); padding: 12px 14px; border-radius: 4px; font-size: 14px; display: none; }
         .err.show { display: block; }
-        .binary { font-size: 12px; color: #666; margin-top: 4px; font-family: 'Consolas', 'Monaco', monospace; word-break: break-all; }
+        .binary { font-size: 12px; color: var(--text-soft); margin-top: 4px; font-family: 'Consolas', 'Monaco', monospace; word-break: break-all; }
         .badge { display: inline-block; padding: 2px 8px; font-size: 11px; border-radius: 10px; margin-left: 6px; }
-        .badge.pub { background: #e3f2fd; color: #1565c0; }
-        .badge.priv { background: #fff3e0; color: #ef6c00; }
-        .badge.special { background: #f3e5f5; color: #6a1b9a; }
+        .badge.pub { background: var(--pub-bg); color: var(--pub-text); }
+        .badge.priv { background: var(--highlight-bg); color: var(--priv-text); }
+        .badge.special { background: var(--special-bg); color: var(--special-text); }
     </style>
 </head>
 <body>
@@ -200,6 +201,7 @@
     });
     calc();
     </script>
+    <script src="../_theme.js"></script>
 </body>
 </html>
 
